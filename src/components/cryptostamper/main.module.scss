@@ -1,0 +1,315 @@
+@import "~/src/styles/variables.scss";
+
+
+.banner_container{
+	display: flex;
+	position: relative;
+	max-width: 864px;
+	width: 100%;
+	align-items: center;
+	font-family: $global-fonts;
+}
+
+.banner_infobar{
+	display: block;
+	flex-grow: 1;
+	max-width: 75%;
+}
+
+.title_header{
+	justify-content: space-between;
+}
+
+.bottom_border{
+	border-bottom: 1px solid var(--white-8);
+	margin-bottom: 10px !important;
+	padding-bottom: 10px !important;
+}
+
+.banner_container .list_container{
+	flex-grow: 1;
+	margin-left: 20px;
+}
+
+.title{
+	margin-bottom: 5px !important;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	margin-top: 0 !important;
+	//font-family: "Roboto", sans-serif;
+}
+
+.url_subtitle{
+	font-size: 10px;
+	color: var(--grey);
+	margin-bottom: 0 !important;
+	margin-top: 0 !important;
+}
+
+.stamp_conatiner{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+}
+
+.list_container{
+	display: block;
+	width: 100%;
+}
+
+.list_lay{
+	display: flex;
+	justify-content: center;
+}
+
+.list_lay.justify_start{
+	justify-content: flex-start;
+}
+
+.list_lay > div{
+	display: block;
+	position: relative;
+}
+
+
+/* width */
+.horiz_scroll::-webkit-scrollbar {
+  height: 2px;
+}
+
+/* Track */
+.horiz_scroll::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.horiz_scroll::-webkit-scrollbar-thumb {
+  background: var(--white-7);
+}
+
+/* Handle on hover */
+.horiz_scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--black-7);
+}
+
+.stamp_frame_container{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.stamp_frame{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	max-width: 65px;
+	max-height: 100px;
+	min-width: 65px;
+	min-height: 100px;
+	border: 3px solid var(--black);
+	border-radius: 12px;
+	cursor: pointer;
+	position: relative;
+	overflow: hidden;
+}
+
+.stamp_frame.borderless{
+	border: none;
+	overflow: unset;
+}
+
+.stamp_image{
+	position: absolute;
+	left: 0%;
+	width: 100%;
+	top: 0%;
+	height: 100%;
+	object-fit: cover;
+	object-position: center;
+	opacity: 0;
+	transition: opacity 1s ease 0.3s;
+}
+
+.stamp_image.visible{
+	opacity: 1;
+	box-shadow: 0px 2px 8px 4px rgba(0, 0, 0, 0.1);
+	border-radius: 4px;
+	cursor: pointer;
+}
+
+.hovarable{
+	cursor: pointer;
+	transform: scale(1,1);
+	transition: transform 0.33s ease;
+}
+
+.hovarable:hover,
+.hovarable:focus{
+	transform: scale(1.02,1.02);
+}
+
+.editable:hover,
+.editable:focus{
+	opacity: 1;
+}
+
+.stamp_added {
+	animation: stamp_added 4s ease;
+}
+
+.stamp_removed{
+	animation: stamp_removed 0.5s ease;
+}
+
+@keyframes stamp_added {
+  0% {
+    top: 0%;
+    transform: scale(1.5,1.5);
+    opacity: 0;
+  }
+  10%{
+  	opacity: 1;
+  }
+  15% {
+  	top: 0%;
+  	transform: scale(1,1);
+  	opacity: 1;
+  }
+  80% {
+  	top: 0%;
+  	transform: scale(1,1);
+  	opacity: 1;
+  }
+  100% {
+    top: 50%;
+    transform: scale(1,1);
+    opacity: 0;
+  }
+}
+
+
+@keyframes stamp_removed {
+  0% {
+    top: 0%;
+    transform: scale(1,1);
+    opacity: 1;
+  }
+  100% {
+    top: 0%;
+    transform: scale(1,1);
+    opacity: 0;
+  }
+}
+
+.stamp_icon{
+	display: block;
+	min-width: 32px;
+	min-height: 32px;
+	opacity: 0;
+	transform: scale(0.9,0.9);
+	transition: opacity 0.33s ease, transform 0.33s ease;
+	filter: var(--f-black);
+}
+
+.stamp_frame:hover .stamp_icon,
+.stamp_frame:focus .stamp_icon{
+	opacity: 1;
+	transform: scale(1,1);
+}
+
+.edit_icon{
+	background: url("/icons/edit.svg");
+	background-position: center;
+	background-size: cover;
+}
+
+.add_icon{
+	background: url("/icons/add_minimal.svg");
+	background-position: center;
+	background-size: cover;
+}
+
+.stamp_count{
+	cursor: pointer;
+}
+
+.stamp_subtag{
+	font-family: 'Roboto', sans-serif;
+	font-style: normal;
+	font-weight: 500;
+	padding: 4px 0 0 0;
+	font-size: 14px;
+	color: var(--black);
+	opacity: 0.4;
+	text-align: center;
+	margin-bottom: 0 !important;
+	display: flex;
+	align-items: center;
+}
+
+.stamp_count:hover .stamp_subtag{
+	color: var(--black);
+	opacity: 1;
+}
+
+.dot{
+	min-width: 0.3em;
+	min-height: 0.3em;
+	background: var(--black);
+	border-radius: 50%;
+}
+
+.hover_card{
+	width: 300px;
+	padding: 10px 0 !important;
+}
+
+.zoomin_popup{
+	animation: zoomin 0.4s ease;
+}
+
+
+@keyframes zoomin {
+  0% {
+    transform: scale(0.9,0.9);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1,1);
+    opacity: 1;
+  }
+}
+
+
+/* SMALL SCREENS */
+
+@media only screen and (max-width: 767.98px) {
+
+	.banner_infobar{
+		max-width: 60%;
+	}
+
+	.title{
+		font-size: 18px;
+	}
+
+	.url_subtitle{
+		font-size: 8px;
+	}
+
+}
+
+/* MEDIUM SCREENS */
+
+@media only screen and (min-width: 768px) and (max-width: 991.98px) {
+
+	
+}
+
+/* LARGE SCREENS */
+
+@media only screen and (min-width: 992px) and (max-width: 1199.98px) {
+	
+}

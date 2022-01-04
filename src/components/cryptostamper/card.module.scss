@@ -1,0 +1,436 @@
+@import "~/src/styles/variables.scss";
+
+.stamp_list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: center;
+}
+
+.stamping_list {
+	display: flex;
+	flex-wrap: wrap;
+	justify-content: flex-start;
+	align-items: center;
+	padding: 20px 20px 20px 30px;
+}
+
+.stamping_bar {
+	width: 100%;
+	display: flex;
+	justify-content: flex-start;
+	align-items: stretch;
+	box-shadow: 0px 2px 8px 4px rgba(0, 0, 0, 0.05);
+	border-radius: 8px;
+	position: relative;
+	margin: 10px 0;
+}
+
+.stamp_card {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 10px;
+}
+
+.stamp_img {
+	width: 105px;
+	height: 170px;
+	display: block;
+	cursor: pointer;
+	transform: scale(1, 1);
+	opacity: 0;
+	transition: transform 0.33s ease, opacity 1s ease;
+	object-fit: cover;
+	object-position: center;
+	background: var(--white);
+	border-radius: 8px;
+	box-shadow: 0px 2px 8px 4px rgba(0, 0, 0, 0.1);
+}
+
+.noshadow{
+	box-shadow: unset;
+}
+
+.stamp_vid {
+	opacity: 1;
+}
+
+.stamp_img:hover {
+	transform: scale(1.02, 1.02);
+}
+
+.stamp_info {
+	margin: 10px 10px;
+	display: flex;
+	justify-content: space-between;
+}
+
+.stamp_number {
+	font-size: 10px;
+	font-family: "Roboto", sans-serif;
+	font-weight: 900;
+	margin-bottom: 0 !important;
+	color: var(--grey);
+	letter-spacing: 0.35em;
+	display: flex;
+	align-items: center;
+}
+
+.infinity,
+.valued,
+.verified {
+	width: 18px;
+	height: 18px;
+	margin-left: 4px;
+}
+
+.infinity {
+	background: url("/icons/infinity.svg");
+	background-position: center;
+	background-size: cover;
+	filter: $f-skyblue;
+}
+
+.valued {
+	background: url("/icons/verified.svg");
+	background-position: center;
+	background-size: cover;
+	filter: $f-yellow;
+}
+
+.verified {
+	background: url("/icons/verified.svg");
+	background-position: center;
+	background-size: cover;
+	filter: $f-green;
+}
+
+.stamp_number .bold {
+	font-size: 20px;
+	font-weight: 500;
+	letter-spacing: 0.25em;
+	color: var(--black);
+}
+
+.stamp_number .bold.green {
+	color: $green;
+}
+
+.stamp_subname {
+	font-size: 10px;
+	font-family: "Roboto", sans-serif;
+	font-weight: 700;
+	margin-bottom: 0 !important;
+}
+
+.stamping_info {
+	flex-grow: 1;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	padding: 20px 10px;
+
+}
+
+.bottom_subtag {
+	display: flex;
+	align-items: center;
+	font-size: 10px;
+	font-family: "Roboto", sans-serif;
+}
+
+.subtag {
+	font-size: 12px;
+	font-weight: 400;
+	margin-bottom: 0 !important;
+	color: var(--grey);
+}
+
+.goto {
+	background: url("/icons/open_in_new.svg");
+	filter: var(--f-grey);
+}
+
+.list{
+	background: url("/icons/view_list.svg");
+	filter: var(--f-grey);
+}
+
+
+.rarity {
+	background: url("/icons/cryptostamping.svg");
+	filter: $f-yellow;
+}
+
+.check{
+	background: url("/icons/check_fill.svg");
+	max-width: 0.8em;
+	max-height: 0.8em;
+	margin-left: 0.5em;
+}
+
+.icon {
+	width: 1.5em;
+	height: 1.5em;
+	background-size: cover;
+	background-position: center;
+	filter: var(--f-black);
+}
+
+.icon.small{
+	width: 1.2em;
+	height: 1.2em;
+}
+
+.icon_padded{
+	margin-left: 8px;
+	width: 1.5em;
+	height: 1.5em;
+	filter: var(--f-black);
+}
+
+.icon_padded_r{
+	margin-right: 4px;
+	width: 1.25em;
+	height: 1.25em;
+	background-size: contain !important;
+	background-position: center !important;
+	background-repeat: no-repeat !important;
+	filter: var(--f-black);
+}
+
+.link {
+	color: var(--black);
+	display: flex;
+	outline: none !important;
+	margin: 0 10px !important;
+}
+
+.link:hover,
+.link:focus {
+	color: var(--black);
+	text-decoration: underline var(--black);
+}
+
+.title{
+	font-size: 18px;
+	font-family: "Roboto", sans-serif;
+	font-weight: 500;
+	margin-bottom: 5px !important;
+	color: var(--black-8);
+}
+
+.title3{
+	font-family: "Raleway", sans-serif;
+}
+
+.title2,
+.title3{
+	font-size: 14px;
+	margin-top: 15px !important;
+	margin-bottom: 2px !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	white-space: pre-line;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
+
+.top_zero{
+	margin-top: 0 !important;
+}
+
+.subtitle{
+	font-size: 12px;
+	font-weight: 900;
+	font-family: "Roboto", sans-serif;
+	margin-bottom: 0 !important;
+	color: var(--black) !important;
+	text-decoration: none !important;
+	outline: none !important;
+	cursor: pointer;
+	opacity: 1;
+}
+
+.subtitle2{
+	font-size: 12px;
+	font-weight: 500;
+	font-family: "Raleway", sans-serif;
+	margin-bottom: 0 !important;
+	color: var(--black) !important;
+	text-decoration: none !important;
+	outline: none !important;
+	cursor: pointer;
+	opacity: 1;
+}
+
+.subtitle.fixed{
+	max-width: 15ch;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.subtitle:hover,
+.subtitle:focus,
+.subtitle2:hover,
+.subtitle2:focus{
+	opacity: 0.5;
+}
+
+.address{
+	font-size: 8px;
+	font-family: "Roboto", sans-serif;
+	margin-bottom: 0 !important;
+	letter-spacing: 0.25em;
+	margin-left: 1em;
+	padding: 2px 8px !important;
+	border-radius: 4px;
+	cursor: pointer;
+	background: var(--white-10);
+}
+
+.address:hover,
+.address:focus{
+	background: var(--white-8);
+}
+
+.description {
+	border-top: 1px solid var(--white-7);
+	padding-top: 10px;
+	color: var(--black-9);
+	font-size: 13px;
+	font-weight: 500;
+	min-height: 3em;
+	margin: 10px 0 20px 0 !important;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	white-space: pre-line;
+	-webkit-line-clamp: 5;
+	-webkit-box-orient: vertical;
+}
+
+.description.big{
+	min-height: 5em;
+}
+
+.description.light{
+	opacity: 0.7;
+}
+
+.stats_info{
+	min-height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	border-left: 1px solid var(--white-8);
+}
+
+.stamp_price{
+	font-size: 16px;
+	letter-spacing: 0.1em;
+	font-family: "Roboto", sans-serif;
+	font-weight: 700;
+	margin-bottom: 0 !important;
+	color: var(--black);
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+}
+
+.stamp_subtag{
+	cursor: pointer;
+	font-size: 6px;
+	font-weight: 900;
+	color: var(--black-7);
+	background: var(--white-8);
+	padding: 2px 6px;
+	border-radius: 2px;
+}
+
+.btn{
+	cursor: pointer;
+	display: flex;
+	width: 100%;
+	font-size: 12px;
+	font-weight: 500;
+	padding: 10px 30px;
+	border-radius: 0 0 12px 0;
+	text-decoration: none !important;
+	color: var(--black-8) !important;
+	border-top: 1px solid var(--white-7);
+	white-space: nowrap;
+}
+
+.btn:hover,
+.btn:focus{
+	opacity: 1;
+	box-shadow: 0px 2px 8px 4px rgba(0, 0, 0, 0.05);
+}
+
+
+/* SMALL SCREENS */
+
+@media only screen and (max-width: 767.98px) {
+
+	.title{
+		font-size: 16px;
+	}
+
+	.subtitle{
+		font-size: 10px;
+	}
+
+	.address{
+		font-size: 6px;
+		letter-spacing: 0.2em;
+	}
+
+	.stamp_card{
+		margin: 5px 0;
+	}
+
+	.stamping_bar .stamp_card{
+		margin: 10px;
+	}
+
+	.title2{
+		width: 100%;
+	}
+
+	.stamp_img{
+		width: 90px;
+		height: 150px;
+	}
+
+	.stamping_bar{
+		flex-wrap: wrap;
+	}
+
+	.stamping_info{
+		flex-basis: 50%;
+	}
+
+	.stats_info{
+		flex-basis: 100%;
+		display: none;
+	}
+
+}
+
+/* MEDIUM SCREENS */
+
+@media only screen and (min-width: 768px) and (max-width: 991.98px) {
+
+	
+}
+
+/* LARGE SCREENS */
+
+@media only screen and (min-width: 992px) and (max-width: 1199.98px) {
+	
+}

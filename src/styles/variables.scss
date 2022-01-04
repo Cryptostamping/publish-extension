@@ -1,0 +1,112 @@
+/* Key colors */
+$primary-color: #ff3737; //#FF3737;
+$secondary-color: #101047;
+$accent-color: #f95555; //#ff6363;#F95555;
+/* Extra colors */
+$secondary-color-light: #2a2a68;
+$highlight-color: #ff5858;
+//used in feedback -shift to #90ee90; for green.
+$light-green: $accent-color;
+
+/*THEME COLORS FOR LIGHT MODE*/
+.cryptostamping-wrapper,
+.popup-content,
+.light-cryptostamping-popup-content {
+	--white: #ffffff;
+	--white-10: #f0f0f0;
+	--white-9: #e8e8e8;
+	--white-8: #e5e5e5;
+	--white-7: #d7d7d7;
+	--super-light-grey: #c4c4c4;
+	--light-grey: #a8a8a8;
+	--mid-grey: #808080;
+	--dark-grey: #505050;
+	--black-7: #5b5b5b;
+	--black-8: #303030;
+	--black-9: #252525;
+	--black-10: #1f1f1f;
+	--black-11: #141414;
+	--black: #000000;
+	--grey: #808080;
+	--f-grey: invert(54%) sepia(0%) saturate(0%) hue-rotate(47deg)
+		brightness(94%) contrast(94%);
+	--f-white: invert(100%) sepia(1%) saturate(2%) hue-rotate(164deg)
+		brightness(105%) contrast(100%);
+	--f-black: invert(0%) sepia(0%) saturate(0%) hue-rotate(324deg) brightness(96%) contrast(104%);
+}
+
+.cryptostamping-wrapper[data-theme="dark"],
+.dark-cryptostamping-popup-content{
+	--black: #ffffff;
+	--black-10: #f0f0f0;
+	--black-9: #e8e8e8;
+	--black-8: #e5e5e5;
+	--black-7: #d7d7d7;
+	--dark-grey: #c4c4c4;
+	--mid-grey: #a8a8a8;
+	--light-grey: #808080;
+	--super-light-grey: #505050;
+	--white-7: #5b5b5b;
+	--white-8: #303030;
+	--white-9: #252525;
+	--white-10: #1f1f1f;
+	--white-11: #141414;
+	--white: #000000;
+	--grey: #808080;
+	--f-grey: invert(54%) sepia(0%) saturate(0%) hue-rotate(47deg)
+		brightness(94%) contrast(94%);
+	--f-black: invert(100%) sepia(1%) saturate(2%) hue-rotate(164deg)
+		brightness(105%) contrast(100%);
+	--f-white: invert(0%) sepia(0%) saturate(0%) hue-rotate(324deg) brightness(96%) contrast(104%);
+}
+
+/* PLAYER COLORS */
+$red: #ff1744;
+$orange: #ff5722;
+$yellow: #f9d82c;
+$teal: #64ffda;
+$skyblue: #42a5f5;
+$darkblue: #651fff;
+$violet: #ea80fc;
+$pink: #f61b68;
+$skin: #ffb26d;
+$green: #00e676;
+$gold: #ebc500;
+
+$f-red: invert(24%) sepia(78%) saturate(5144%) hue-rotate(337deg)
+	brightness(99%) contrast(105%);
+$f-orange: invert(48%) sepia(28%) saturate(7374%) hue-rotate(346deg)
+	brightness(100%) contrast(102%);
+$f-yellow: invert(71%) sepia(61%) saturate(539%) hue-rotate(4deg)
+	brightness(109%) contrast(95%);
+$f-teal: invert(76%) sepia(57%) saturate(370%) hue-rotate(108deg)
+	brightness(104%) contrast(101%);
+$f-skyblue: invert(54%) sepia(94%) saturate(1411%) hue-rotate(181deg)
+	brightness(99%) contrast(95%);
+$f-darkblue: invert(15%) sepia(89%) saturate(5277%) hue-rotate(259deg)
+	brightness(98%) contrast(109%);
+$f-violet: invert(75%) sepia(28%) saturate(7362%) hue-rotate(230deg)
+	brightness(101%) contrast(98%);
+$f-pink: invert(24%) sepia(95%) saturate(4233%) hue-rotate(327deg)
+	brightness(97%) contrast(99%);
+$f-skin: invert(97%) sepia(32%) saturate(6640%) hue-rotate(306deg)
+	brightness(98%) contrast(104%);
+$f-green: invert(75%) sepia(29%) saturate(7484%) hue-rotate(104deg)
+	brightness(103%) contrast(101%);
+
+$d-red: #b3092a;
+$d-orange: #c73a0e;
+$d-yellow: #d6b50c;
+$d-teal: #0e8f70;
+$d-skyblue: #24689e;
+$d-darkblue: #3e10a3;
+$d-violet: #9321a6;
+$d-pink: #990e3f;
+$d-skin: #7a4b21;
+$d-green: #00733b;
+$d-grey: #505050;
+
+$sidebar-width: 84px;
+$header-height: 3rem;
+
+$global-fonts:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans","Liberation Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";

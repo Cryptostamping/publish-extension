@@ -1,0 +1,25 @@
+@import "~/src/styles/variables.scss";
+
+.popup_tooltip {
+  border-radius: 8px;
+  margin: 0 0 8px 0;
+  background: var(--white);
+  font-family: "Roboto", sans-serif !important;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--black);
+  box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, 0.1);
+  display: block;
+  position: relative;
+}
+
+.popup_box{
+  padding: 10px 20px;
+  max-width: 200px;
+  min-width: 200px;
+}
+
+.popup_box > p {
+  margin-bottom: 0;
+  white-space: pre-line;
+}

@@ -1,0 +1,7 @@
+[[redirects]]
+	from="/widgets.js"
+	to="/widgets/widgets.js"
+
+[[redirects]]
+	from="/widgets.css"
+	to="/widgets/widgets.css"

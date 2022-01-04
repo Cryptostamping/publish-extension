@@ -1,0 +1,522 @@
+.container {
+	transition: transform 0.5s ease;
+}
+
+
+.screen_block {
+	min-height: 100vh;
+	width: 100%;
+}
+
+.screen_one {
+	background: var(--white);
+}
+
+.header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	left: 0;
+	right: 0;
+	top: 0;
+	position: absolute;
+}
+
+.header > div{
+	flex: 1;
+}
+
+.header > .banner_box{
+	flex: 6;
+}
+
+.logo_box {
+	padding: 10px 25px;
+}
+
+.logo_icon {
+	display: block;
+	background: url("/logo_favicon.svg");
+	width: 5rem;
+	height: 5rem;
+	background-position: center;
+	background-size: cover;
+}
+
+.banner_box{
+	display: block;
+	margin: 50px 0 0px 0;
+}
+
+.banner_text {
+	font-family: 'Raleway', sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 18px;
+	line-height: 21px;
+	text-align: center;
+	letter-spacing: 0.5em;
+	margin-bottom: 0;
+	color: var(--black);
+}
+
+
+
+.screen_two{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 100vh;
+	margin: 0px 0 0 0;
+	background: var(--black-11);
+}
+
+.two_infobox{
+	display: block;
+	margin: 0px 50px;
+	max-width: 40vw;
+}
+
+.two_centerinfobox{
+	display: block;
+	margin: 0 100px;
+	max-width: 35vw;
+}
+
+.two_title{
+	font-family: 'Quicksand', sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 56px;
+	color: var(--white-8);
+	margin-bottom: 40px;
+}
+
+.two_tag{
+	color: var(--white-7);
+	opacity: 0.2;
+	font-size: 18px;
+}
+
+.two_title.black{
+	color: var(--black-9);
+}
+
+.two_title.faq{
+	color: var(--black-9);
+	font-size: 36px;
+	margin: 80px 0;
+}
+
+.two_description{
+	font-family: 'Roboto', sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 18px;
+	color: var(--white-8);
+	margin-bottom: 0;
+	max-width: 80%;
+	opacity: 0.75;
+}
+
+.two_description.black{
+	color: var(--black-8);
+}
+
+.two_description > i{
+	font-style: normal;
+	opacity: 1;
+}
+
+.two_videobox{
+	margin: 20px;
+}
+
+.two_video{
+	display: block;
+	width: 450px;
+	height: 450px;
+	border-radius: 20px;
+	box-shadow: 2px 2px 12px 8px rgba(0, 0, 0, 0.15);
+}
+
+.screen_white{
+	background: var(--white);
+	margin: 0;
+	margin: 20px 0;
+}
+
+.two_imagebox{
+	width: 50%;
+	position: relative;
+	display: flex;
+}
+
+.two_image{
+	display: block;
+	flex: 1;
+	width: 100%;
+	height: auto;
+	object-fit: cover;
+	object-position: center;
+}
+
+.screen_three{
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin: 50px 0 100px 200px;
+	background: var(--white);
+}
+
+.screen_presales{
+	margin: 80px 0 0 0;
+}
+
+.faq_block{
+	display: flex;
+	flex-direction: column;
+	width: 57%;
+	margin:0 20px 0 40px;
+}
+
+.display_grid{
+	display: flex;
+	overflow-x: scroll;
+}
+
+/* width */
+.display_grid::-webkit-scrollbar {
+  height: 3px;
+}
+
+/* Track */
+.display_grid::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.display_grid::-webkit-scrollbar-thumb {
+  background: var(--white-7);
+}
+
+/* Handle on hover */
+.display_grid::-webkit-scrollbar-thumb:hover {
+  background: var(--black-7);
+}
+
+.display_box{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	cursor: pointer;
+}
+
+.stamp_display_vid {
+	display: block;
+	width: 100%;
+	height: auto;
+	min-height: 220px;
+}
+
+
+.current_availability {
+	font-family: 'Quicksand', sans-serif;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 16px;
+	color: var(--black-8);
+	margin-bottom: 30px;
+}
+
+.description{
+	margin: 40px 0;
+	font-family: 'Roboto', sans-serif;
+	color: var(--black-7);
+	border-right: none;
+}
+
+
+.presale_box{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 200px;
+	margin-right: 15%;
+}
+
+.timer_block{
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 10px;
+}
+
+.timer_bit{
+	flex-basis: 100px;
+	min-width: 50px;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin: 0 25px;
+}
+
+.timer_count{
+	font-family: 'Racing Sans One', cursive;
+	font-style: normal;
+	font-weight: normal;
+	font-size: 40px;
+	text-align: center;
+	margin-bottom: 0px;
+}
+
+.timer_tag{
+	font-family: 'Raleway', sans-serif;
+	font-style: normal;
+	font-weight: 700;
+	font-size: 12px;
+	text-align: center;
+	margin-bottom: 0px;
+}
+
+.roadmap_screen{
+	display: flex;
+	justify-content: center;
+}
+
+.roadmap_poster{
+	width: 50%;
+}
+
+.bottom_buttons{
+	display: flex;
+	justify-content: flex-start;
+}
+
+
+/* SMALL SCREENS */
+
+@media only screen and (max-width: 767.98px) {
+
+
+	.banner_box{
+		margin-top: 20px;
+	}
+
+	.banner_text {
+		margin: 0 15%;
+		text-align: center;
+		font-size: 12px;
+		letter-spacing: 0.25em;
+	}
+
+	.screen_two{
+		height: unset;
+		padding: 100px 0;
+		flex-wrap: wrap;
+	}
+
+	.two_title.faq{
+		font-size: 28px;
+		margin: 60px 0 40px 0;
+	}
+
+	.two_description{
+		font-size: 14px;
+		max-width: 95%;
+	}
+
+	.two_infobox{
+		max-width: unset;
+		margin: 0px 8% 8% 8%;
+	}
+
+	.two_videobox{
+		width: 80%;
+	}
+
+	.two_imagebox{
+		width: 100%;
+	}
+
+	.two_video{
+		width: 100%;
+		height: auto;
+	}
+
+	.two_centerinfobox{
+		flex: 1;
+		margin: 40px 8% 0 8%;
+		max-width: unset;
+	}
+
+	.screen_white {
+		margin: 0;
+		padding: 0;
+		flex-wrap: wrap;
+		padding-bottom: 0;
+	}
+
+	.screen_three{
+		margin: 40px 0;
+	}
+
+	.faq_block{
+		width: 90%;
+		margin: 0 8%;
+	}
+
+	.three_title{
+		font-size: 18px;
+	}
+
+	.three_description{
+		font-size: 13.5px;
+	}
+
+	/* ONLY PRESALE */
+
+	.screen_presales{
+		margin: 40px 0 0px 0;
+	}
+
+	.screen_three.reverse_order{
+		flex-wrap: wrap;
+		flex-direction: column-reverse;
+		margin-top: 0;
+	}
+
+	.reverse_order > .presale_box{
+		margin-top:0;
+		margin-right: 8%;
+		margin-left: 8%;
+		display: none;
+	}
+
+	.roadmap_poster{
+		width: 100%;
+	}
+
+	.stamp_display_vid{
+		min-height: 100px;
+		min-width: 100px;
+	}
+
+	.current_availability{
+		font-size: 12px;
+	}
+}
+
+/* MEDIUM SCREENS */
+
+@media only screen and (min-width: 768px) and (max-width: 991.98px) {
+	.banner_box{
+		margin-top: 40px;
+	}
+
+	.banner_text {
+		font-size: 12px;
+		letter-spacing: 0.25em;
+		margin-right: 10%;
+	}
+
+	.screen_two{
+		height: unset;
+		padding: 100px 0;
+		flex-wrap: wrap;
+	}
+
+	.two_title{
+		font-size: 56px;
+	}
+
+	.two_title.faq{
+		font-size: 36px;
+		margin: 60px 0 40px 0;
+	}
+
+	.two_description{
+		font-size: 18px;
+	}
+
+	.two_title.black{
+		font-size: 44px;
+	}
+
+	.two_description.black{
+		font-size: 18px;
+	}
+
+	.two_infobox{
+		max-width: unset;
+		margin: 0px 10px 8% 12%;
+	}
+
+	.two_videobox{
+		width: 80%;
+	}
+
+	.two_imagebox{
+		width: 100%;
+	}
+
+	.two_video{
+		width: 100%;
+		height: auto;
+	}
+
+	.two_centerinfobox{
+		flex: 1;
+		margin: 100px 50px 0 12%;
+		max-width: unset;
+	}
+
+	.screen_white {
+		margin: 0;
+		flex-wrap: wrap;
+		padding-bottom: 0;
+	}
+
+	.faq_block{
+		width: 80%;
+	}
+
+	.screen_three{
+		margin: 50px 8% 50px 8%;
+		justify-content: center;
+	}
+
+	.roadmap_poster{
+		width: 80%;
+	}
+}
+
+/* LARGE SCREENS */
+
+@media only screen and (min-width: 992px) and (max-width: 1199.98px) {
+	.banner_text {
+		font-size: 14px;
+		margin-right: 5%;
+	}
+
+	.two_title{
+		font-size: 40px;
+	}
+
+	.two_description{
+		font-size: 14px;
+	}
+
+	.two_centerinfobox{
+		margin: 0 80px;
+	}
+
+	.screen_white {
+		margin: 0;
+	}
+}
+
+
