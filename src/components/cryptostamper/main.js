@@ -1,3 +1,4 @@
+/* global chrome */
 import React, { useState, useEffect, useRef, memo } from "react";
 import { useMoralis, useMoralisWeb3Api } from "react-moralis";
 import { Provider } from "react-redux";
@@ -20,7 +21,8 @@ import {
 	supportedTestChains,
 	supportedMainChains,
 	getChainObjectFromSymbol,
-	FRONTEND_BASE_URL
+	FRONTEND_BASE_URL,
+	APP_SIGNING_MSG,
 } from "~/src/lib/data";
 import {
 	useImageFade,
@@ -28,6 +30,11 @@ import {
 	prettyPrintDate,
 	getRandPrice,
 } from "~/src/lib/utils";
+import {
+	MoralisLogin,
+	moralisQueryConstructor,
+	generateMoralisQuery,
+} from "~/src/lib/plugin";
 
 import {
 	setURL,
@@ -83,7 +90,7 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 					"top right",
 					"bottom center",
 					"bottom left",
-					"bottom right"
+					"bottom right",
 				]}
 				popupClass={main.zoomin_popup}
 				closeOnClick={true}
@@ -122,7 +129,9 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 						<div className="csbs-d-flex csbs-justify-content-between csbs-align-items-center csbs-px-3">
 							<div className="">
 								<a href=""></a>
-								<p className={`${card.title3} ${card.top_zero}`}>
+								<p
+									className={`${card.title3} ${card.top_zero}`}
+								>
 									{stamping.metadata.name}
 								</p>
 								<div className="csbs-d-flex csbs-align-items-center">
@@ -162,7 +171,9 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 										</a>
 									}
 								>
-									<p className="csbs-p-2">Show stamping history</p>
+									<p className="csbs-p-2">
+										Show stamping history
+									</p>
 								</Tooltip>
 							</div>
 						</div>
@@ -211,7 +222,12 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 }, areEqual);
 renderMiniStamp.displayName = "card";
 
-function StampFrame({ displayImage, currentStamping, handleAddStamp, animationState }) {
+function StampFrame({
+	displayImage,
+	currentStamping,
+	handleAddStamp,
+	animationState,
+}) {
 	return (
 		<div onClick={handleAddStamp} className={main.stamp_frame}>
 			<span
@@ -258,7 +274,6 @@ function CryptoStamper({ provider, settings, theme }) {
 	const {
 		provider: ethereumProvider,
 		address,
-		accounts,
 		connectWallet,
 		setProvider,
 	} = useConnect();
@@ -284,13 +299,15 @@ function CryptoStamper({ provider, settings, theme }) {
 	const [animationState, setAnimeState] = useState(null);
 	const dataTheme = useSelector((state) => state.stamper.dataTheme);
 
-	useEffect(()=>{
+	useEffect(() => {
 		dispatch(setDataTheme(theme || "light"));
-	},[theme])
+	}, [theme]);
 
 	/* setup ethereum provider */
 	useEffect(() => {
 		if (provider) setProvider(provider);
+		else if (window.cryptostamping && view === "plugin")
+			setProvider({ type: "cryptostamping" });
 		else setProvider(window.ethereum);
 	}, [provider, setProvider]);
 
@@ -349,20 +366,16 @@ function CryptoStamper({ provider, settings, theme }) {
 	/* load stampings & stamps count */
 	useEffect(() => {
 		if (isInitialized && url) {
-			const Stamping = Moralis.Object.extend("Stamping");
-			const query1 = new Moralis.Query(Stamping);
-
-			console.log(testnet);
-			if (testnet) query1.containedIn("chain", supportedTestChains);
-			else query1.containedIn("chain", supportedMainChains);
-			query1
-				.equalTo(
-					"web_id",
-					`${url}${embedId ? "-embed-" + embedId : ""}`
-				)
-				.descending("createdAt")
-				.limit(30)
-				.find()
+			const stampingQuery = generateMoralisQuery("stampingQuery", {
+				testnet,
+				url,
+				embedId,
+				exec: "find",
+				sort: "createdAt",
+				sort_order: true,
+				limit: 30,
+			});
+			moralisQueryConstructor(Moralis, stampingQuery)
 				.then((results) => {
 					dispatch(
 						setStampings(Array.from(results, (x) => x.toJSON()))
@@ -372,48 +385,36 @@ function CryptoStamper({ provider, settings, theme }) {
 					console.log(err);
 				});
 
-			const query3 = new Moralis.Query(Stamping);
-			if (testnet) query3.containedIn("chain", supportedTestChains);
-			else query3.containedIn("chain", supportedMainChains);
-			query3
-				.equalTo(
-					"web_id",
-					`${url}${embedId ? "-embed-" + embedId : ""}`
-				)
-				.count()
-				.then((response) => {
+			const userStampingQueryCount = generateMoralisQuery(
+				"stampingQuery",
+				{ testnet, url, embedId, exec: "count" }
+			);
+			moralisQueryConstructor(Moralis, userStampingQueryCount).then(
+				(response) => {
 					dispatch(setStampingsCount(response));
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+				}
+			);
 		}
 	}, [url, embedId, testnet, dispatch, isInitialized]);
 
 	/* load User Stamp Here */
 	useEffect(() => {
 		if (isInitialized && url && address) {
-			const Stamping = Moralis.Object.extend("Stamping");
-			const query2 = new Moralis.Query(Stamping);
-			if (testnet) query2.containedIn("chain", supportedTestChains);
-			else query2.containedIn("chain", supportedMainChains);
-			query2
-				.equalTo(
-					"web_id",
-					`${url}${embedId ? "-embed-" + embedId : ""}`
-				)
-				.equalTo("user_address", address)
-				.find()
-				.then((user_stampings) => {
-					if (user_stampings?.length > 0) {
-						dispatch(
-							setCurrentStamping(user_stampings[0]?.toJSON())
-						);
+			const userStampingQuery = generateMoralisQuery("stampingQuery", {
+				testnet,
+				url,
+				embedId,
+				address,
+				limit: 1,
+				exec: "find",
+			});
+			moralisQueryConstructor(Moralis, userStampingQuery).then(
+				(results) => {
+					if (results?.length > 0) {
+						dispatch(setCurrentStamping(results[0]?.toJSON()));
 					}
-				})
-				.catch((err) => {
-					console.log(err);
-				});
+				}
+			);
 		}
 	}, [url, isInitialized, address, testnet, embedId, dispatch]);
 
@@ -433,6 +434,20 @@ function CryptoStamper({ provider, settings, theme }) {
 			openSelector(address);
 			return;
 		}
+		if (window.cryptostamping) {
+			window.cryptostamping.ethereum.connectWallet((response) => {
+				if (!response.error) {
+					MoralisLogin(Moralis, response)
+						.then((_user) => {
+							openSelector(address);
+						})
+						.catch((err) => {
+							console.log(err);
+						});
+				}
+			});
+			return;
+		}
 		connectWallet()
 			.then((res) => {
 				const currentUser = Moralis.User.current();
@@ -441,8 +456,7 @@ function CryptoStamper({ provider, settings, theme }) {
 					return;
 				}
 				return Moralis.authenticate({
-					signingMessage:
-						"Hey there, this seems to be your first time stamping here. Please sign to verify this is you. This will not charge any gas transaction fee.",
+					signingMessage: APP_SIGNING_MSG,
 				});
 			})
 			.then(() => {
@@ -473,11 +487,15 @@ function CryptoStamper({ provider, settings, theme }) {
 					>
 						<div className={`${main.banner_infobar}`}>
 							<h2 className={main.title}>{title}</h2>
-							<p className={main.url_subtitle}>{url ? decodeURI(url) : "WARNING: ERROR"}</p>
+							<p className={main.url_subtitle}>
+								{url ? decodeURI(url) : "WARNING: ERROR"}
+							</p>
 						</div>
 						<div className="csbs-d-flex csbs-align-items-stretch">
 							<div
-								className={"csbs-d-flex csbs-flex-column csbs-align-items-end"}
+								className={
+									"csbs-d-flex csbs-flex-column csbs-align-items-end"
+								}
 							>
 								<h3 className={`${main.title} csbs-mb-0`}>
 									{getRandPrice(
@@ -551,40 +569,39 @@ function CryptoStamper({ provider, settings, theme }) {
 			)}
 
 			{view === "list" && (
-
 				<div className={`${main.list_container} csbs-container`}>
 					<div className="csbs-d-block csbs-w-100">
-					<AutoSizer disableHeight>
-						{({ width }) => (
-							<List
-								ref={listRef}
-								height={120}
-								className={`${main.list_lay} ${main.horiz_scroll}`}
-								itemCount={stampings?.length}
-								itemData={stampings}
-								itemSize={100}
-								width={width}
-								layout="horizontal"
-							>
-								{renderMiniStamp}
-							</List>
-						)}
-					</AutoSizer>
+						<AutoSizer disableHeight>
+							{({ width }) => (
+								<List
+									ref={listRef}
+									height={120}
+									className={`${main.list_lay} ${main.horiz_scroll}`}
+									itemCount={stampings?.length}
+									itemData={stampings}
+									itemSize={100}
+									width={width}
+									layout="horizontal"
+								>
+									{renderMiniStamp}
+								</List>
+							)}
+						</AutoSizer>
 					</div>
-					<div className={` csbs-d-flex csbs-justify-content-center`}
-					>
-						<div  onClick={handleStampsListing}
-						 className={main.stamp_count}>
-						<p
-						className={`${main.stamp_subtag} csbs-pr-3`}>
-							{stampingsCount} &nbsp; nfts &nbsp; here.
-						</p>
+					<div className={` csbs-d-flex csbs-justify-content-center`}>
+						<div
+							onClick={handleStampsListing}
+							className={main.stamp_count}
+						>
+							<p className={`${main.stamp_subtag} csbs-pr-3`}>
+								{stampingsCount} &nbsp; nfts &nbsp; here.
+							</p>
 						</div>
-						<div  onClick={handleAddStamp}
-						 className={main.stamp_count}>
-						<p className={`${main.stamp_subtag} `}>
-							 Add.
-						</p>
+						<div
+							onClick={handleAddStamp}
+							className={main.stamp_count}
+						>
+							<p className={`${main.stamp_subtag} `}>Add.</p>
 						</div>
 					</div>
 				</div>

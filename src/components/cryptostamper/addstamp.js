@@ -14,7 +14,7 @@ import {
 	availableMainChains,
 	availableTestChains,
 	getProviderUrl,
-	FRONTEND_BASE_URL
+	FRONTEND_BASE_URL,
 } from "~/src/lib/data";
 
 import {
@@ -129,9 +129,14 @@ function AddStamp({
 			alert(
 				"There is an error! please switch to the right account address"
 			);
-		const txt_msg = `Please confirm that you are stamping ${currentStamp?.metadata?.name} on the webapge ${url ? decodeURI(url) : "WARNING: ERROR"}.`;
+		const txt_msg = `Please confirm that you are stamping ${
+			currentStamp?.metadata?.name
+		} on the webapge ${url ? decodeURI(url) : "WARNING: ERROR"}.`;
 		setLoading(true);
-		signMessage(txt_msg, address)
+		const promise = window.cryptostamping
+			? window.cryptostamping.signMessage(txt_msg)
+			: signMessage(txt_msg, address);
+		promise
 			.then((response) => {
 				const Stamping = Moralis.Object.extend("Stamping");
 				if (!stamping?.id) {
@@ -181,9 +186,14 @@ function AddStamp({
 			alert(
 				"There is an error! please switch to the right account address"
 			);
-		const txt_msg = `Please confirm that you are removing stamp ${currentStamp?.metadata?.name} from the webapge ${url ? decodeURI(url) : "WARNING: ERROR"}.`;
+		const txt_msg = `Please confirm that you are removing stamp ${
+			currentStamp?.metadata?.name
+		} from the webapge ${url ? decodeURI(url) : "WARNING: ERROR"}.`;
 		setLoading(true);
-		signMessage(txt_msg, address)
+		const promise = window.cryptostamping
+			? window.cryptostamping.signMessage(txt_msg)
+			: signMessage(txt_msg, address);
+		promise
 			.then((response) => {
 				const promA = [];
 				promA.push(stamping.destroy());
@@ -245,7 +255,9 @@ function AddStamp({
 							currentStamp.rarity > 0 ? styles.blue : ""
 						}`}
 					>
-						<span>{getRandPrice()} ETH / {currentStamp.rarity}</span>
+						<span>
+							{getRandPrice()} ETH / {currentStamp.rarity}
+						</span>
 					</div>
 				)}
 			</div>
@@ -275,7 +287,9 @@ function AddStamp({
 				)}
 				<div className={styles.info_box}>
 					<h2 className={styles.title}>{title}</h2>
-					<p className={styles.subtitle}>{url ? decodeURI(url) : "WARNING: ERROR"}</p>
+					<p className={styles.subtitle}>
+						{url ? decodeURI(url) : "WARNING: ERROR"}
+					</p>
 					<div className={styles.input_btn}>
 						<textarea
 							className={`${styles.input_text}`}

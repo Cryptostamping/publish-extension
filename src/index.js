@@ -6,6 +6,7 @@ import "./styles/globals.scss";
 import "./styles/ui_lib/bootstrap-grid.css";
 //import 'reactjs-popup/dist/index.css';
 import Layout from "./Layout";
+// import App from "./App";
 // Find all widget divs
 
 const RootDiv = document.querySelector("#root");

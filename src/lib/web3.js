@@ -33,7 +33,7 @@ export const useSigning = (provider_in) => {
 
   const signMessage = (message, from) => {
     if (!provider || !web3) return alert("Please connect your wallet!");
-    var msg =  `0x${Buffer.from(message, 'utf8').toString('hex')}`;
+    var msg = `0x${Buffer.from(message, "utf8").toString("hex")}`;
     var from_address = from || web3.eth.accounts[0];
     if (!from_address) return alert("Please connect your wallet!");
 
@@ -176,23 +176,17 @@ export const useConnect = (provider_in) => {
     };
 
     const handleConnect = (connectInfo) => {
-      console.log(connectInfo);
     };
 
     const handleDisconnect = (connectInfo) => {
-      console.log(connectInfo);
       setAccounts([]);
       setConnected(false);
       setAddress(null);
     };
 
-    if (provider) {
+    if (provider && provider?.type !== "cryptostamping") {
       if (provider?.selectedAddress) {
-        getAccounts({ requestPermission: true })
-          .then(handleAccountsChanged)
-          .catch((err) => {
-            console.log(err);
-          });
+        getAccounts({ requestPermission: true }).then(handleAccountsChanged);
       }
 
       provider.on("accountsChanged", handleAccountsChanged);
@@ -200,19 +194,38 @@ export const useConnect = (provider_in) => {
       provider.on("disconnect", handleDisconnect);
     }
 
+    if (provider?.type === "cryptostamping") {
+      if (window.cryptostamping.isConnected()) {
+        window.cryptostamping.ethereum.getAccounts(handleAccountsChanged);
+      }
+      window.cryptostamping.on("accountsChanged", handleAccountsChanged);
+      window.cryptostamping.on("connect", handleConnect);
+      window.cryptostamping.on("disconnect", handleDisconnect);
+    }
+
     return () => {
       _isMounted.current = false;
       _isConnectCalled.current = false;
-      if (provider) {
+      if (provider && provider?.type !== "cryptostamping") {
         provider.removeListener("accountsChanged", handleAccountsChanged);
         provider.removeListener("connect", handleConnect);
         provider.removeListener("disconnect", handleDisconnect);
+      }
+      if (provider?.type === "cryptostamping") {
+        window.cryptostamping.removeListener(
+          "accountsChanged",
+          handleAccountsChanged
+        );
+        window.cryptostamping.removeListener("connect", handleConnect);
+        window.cryptostamping.removeListener("disconnect", handleDisconnect);
       }
     };
   }, [provider, setAccounts, setConnected, setAddress]);
 
   const connectWallet = () => {
     if (!provider) throw Error("Metamask is not available.");
+    if (provider.type === "cryptostamping")
+      throw Error("Metamask is connected to cryptostamping.");
     if (!_isMounted.current) throw Error("Component is not mounted.");
     // if (_isConnectCalled.current) throw Error("Connect method already called.");
     _isConnectCalled.current = true;
@@ -224,7 +237,7 @@ export const useConnect = (provider_in) => {
   const getAccounts = (
     { requestPermission } = { requestPermission: false }
   ) => {
-    if (!provider) {
+    if (!provider && provider.type !== "cryptostamping") {
       console.warn("Metamask is not available.");
       return;
     }

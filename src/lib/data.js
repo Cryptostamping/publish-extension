@@ -1,6 +1,7 @@
 export const APP_TITLE = "Cryptostamping";
 export const APP_TITLE_HEADER =
 	"Cryptostamping - Open-Source, Ownerless, Decentralized.";
+export const APP_SIGNING_MSG = "Hey there, this seems to be your first time stamping here. Please sign to verify this is you. This will not charge any gas transaction fee.";
 
 const forceTESTNET = false;
 export const IN_DEV_ENV = process && process.env.NODE_ENV === "development";

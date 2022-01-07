@@ -1,26 +1,13 @@
-# Getting Started with Create React App
+# Cryptostamping Extension
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-## Available Scripts
+## window.cryptostamping
 
-In the project directory, you can run:
-
-### `npm run start`
-
-Runs the app in the development mode.\
+A global module is injected to to all webpages via content script, that lets you sign requests via cryptostamping plugin.
 
 
-### `npm test`
+### `to do`
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
-
-### `npm run build`
-
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+- Add firefox version.
 

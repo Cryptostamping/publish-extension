@@ -87,21 +87,21 @@
 }
 
 .infinity {
-	background: url("/icons/infinity.svg");
+	background: url("https://embed.cryptostamping.org/icons/infinity.svg");
 	background-position: center;
 	background-size: cover;
 	filter: $f-skyblue;
 }
 
 .valued {
-	background: url("/icons/verified.svg");
+	background: url("https://embed.cryptostamping.org/icons/verified.svg");
 	background-position: center;
 	background-size: cover;
 	filter: $f-yellow;
 }
 
 .verified {
-	background: url("/icons/verified.svg");
+	background: url("https://embed.cryptostamping.org/icons/verified.svg");
 	background-position: center;
 	background-size: cover;
 	filter: $f-green;
@@ -150,23 +150,23 @@
 }
 
 .goto {
-	background: url("/icons/open_in_new.svg");
+	background: url("https://embed.cryptostamping.org/icons/open_in_new.svg");
 	filter: var(--f-grey);
 }
 
 .list{
-	background: url("/icons/view_list.svg");
+	background: url("https://embed.cryptostamping.org/icons/view_list.svg");
 	filter: var(--f-grey);
 }
 
 
 .rarity {
-	background: url("/icons/cryptostamping.svg");
+	background: url("https://embed.cryptostamping.org/icons/cryptostamping.svg");
 	filter: $f-yellow;
 }
 
 .check{
-	background: url("/icons/check_fill.svg");
+	background: url("https://embed.cryptostamping.org/icons/check_fill.svg");
 	max-width: 0.8em;
 	max-height: 0.8em;
 	margin-left: 0.5em;

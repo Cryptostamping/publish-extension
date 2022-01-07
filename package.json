@@ -1,6 +1,6 @@
 {
   "name": "publish-extension",
-  "version": "0.1.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "@metamask/eth-sig-util": "^4.0.0",
@@ -15,6 +15,7 @@
     "path": "^0.12.7",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
+    "react-frame-component": "^5.2.1",
     "react-moralis": "^0.3.11",
     "react-redux": "^7.2.5",
     "react-scripts": "^3.4.1",
@@ -29,7 +30,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "build": "react-app-rewired build"
+    "build": "react-app-rewired build && node scripts/paths.js"
   },
   "eslintConfig": {
     "extends": [
