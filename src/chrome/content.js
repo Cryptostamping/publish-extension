@@ -3,7 +3,8 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Plugin from "~/src/plugin";
-import {CryptostampingProvider} from  "~/src/lib/plugin";
+import { CryptostampingProvider } from "~/src/lib/plugin";
+import "~/src/plugin.css";
 import "~/src/styles/globals.scss";
 import "~/src/styles/ui_lib/bootstrap-grid.css";
 
@@ -13,49 +14,90 @@ if (document.domain.indexOf("chrome-extension://") > -1) {
 }
 
 class cryptostamping extends CryptostampingProvider {
-
-    constructor(){
+    constructor() {
         super();
         chrome.runtime.onMessage.addListener((message, sender, response) => {
-             if (message.type === "provider_events") {
-                this.emit(message.name, message.data)
+            if (message.type === "provider_events") {
+                this.emit(message.name, message.data);
             }
         });
     }
 
-    selectedAddress = async () => {
-        const {address} = await chrome.runtime.sendMessage(
-                { type: "ethereum", key: "get_address", from: "content" });
-        return address;
+    selectedAddress = () => {
+        return new Promise((resolve, reject) => {
+            chrome.runtime.sendMessage(
+                { type: "ethereum", key: "get_address", from: "content" },
+                (res) => {
+                    if (res.error) reject(res.error);
+                    else resolve(res.address);
+                }
+            );
+        });
+    };
+
+    closeEmbed = () => {
+        const app = document.getElementById("cryptostamping-root");
+        app.style.display = "none";
     };
 
     isConnected = () => {
         return true;
-    }
+    };
+
+    close = () => {
+        const app = document.getElementById("cryptostamping-root");
+        app.style.display = "none";
+    };
 
     ethereum = {
-        connectWallet: (callback) => {
-            chrome.runtime.sendMessage(
-                { type: "ethereum", key: "connect_wallet", from: "content" },
-                callback
-            );
+        connectWallet: (sign_message) => {
+            return new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage(
+                    {
+                        type: "ethereum",
+                        key: "connect_wallet",
+                        from: "content",
+                        sign_message,
+                    },
+                    (res) => {
+                        if (res.error) reject(res.error);
+                        else resolve(res);
+                    }
+                );
+            });
         },
 
-        getAccounts: (callback) => {
-            chrome.runtime.sendMessage(
-                { type: "ethereum", key: "get_accounts", from: "content" },
-                callback
-            );
+        getAccounts: ({ requestPermission }) => {
+            return new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage(
+                    {
+                        type: "ethereum",
+                        key: "get_accounts",
+                        from: "content",
+                        requestPermission,
+                    },
+                    (res) => {
+                        if (res.error) reject(res.error);
+                        else resolve(res);
+                    }
+                );
+            });
         },
 
         signMessage: (message, callback) => {
-            return new Promise((resolve, reject) => {chrome.runtime.sendMessage(
-                { type: "ethereum", key: "sign_message", from: "content", message: message}, (res) => {
-                    if(res.error)
-                        reject(res.error);
-                    else
-                        resolve(res);
-                })
+            return new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage(
+                    {
+                        type: "ethereum",
+                        key: "sign_message",
+                        from: "content",
+                        message: message,
+                    },
+                    (res) => {
+                        if (res.error) reject(res.error);
+                        else resolve(res);
+                    }
+                );
             });
         },
     };
@@ -83,37 +125,75 @@ class cryptostamping extends CryptostampingProvider {
         },
     }
     */
-};
+}
 
 const messagesFromReactAppListener = (message, sender, response) => {
-    console.log(message, sender, response);
-
     if (
         sender.id === chrome.runtime.id &&
         message.from === "background" &&
         message.message === "embed_stamper"
     ) {
+        var link = document.createElement("link");
+        link.href =
+            "https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap";
+        link.rel = "stylesheet";
+        document.getElementsByTagName("head")[0].appendChild(link);
+
+        var csp = document.createElement("META");
+        csp.httpEquiv = "Content-Security-Policy";
+        csp.content =
+            "font-src * 'unsafe-inline' data:; media-src * data: blob:; img-src * blob: data:;";
+        document.getElementsByTagName("head")[0].appendChild(csp);
+
         const app =
             document.getElementById("cryptostamping-root") ||
             document.createElement("div");
         app.id = "cryptostamping-root";
         app.className = "extension_root";
+        app.style.display = "block";
         window.cryptostamping = new cryptostamping();
         document.body.style.display = "block";
-        document.body.firstChild.style.position = "relative";
+        for (var i = 0; i < document.body.children.length; i++) {
+            if (
+                document.body.children[i].tagName === "SCRIPT" ||
+                document.body.children[i].tagName === "NOSCRIPT"
+            ) {
+                continue;
+            }
+            document.body.children[i].style.position = "relative";
+            break;
+        }
+        //if (document.body.firstElementChild)
+        //  document.body.firstElementChild.style.position = "relative";
         document.body.insertBefore(app, document.body.firstChild);
-        ReactDOM.render(<Plugin view={"button"} theme={"light"} />, app);
+
+        ReactDOM.render(<Plugin view={"plugin"} theme={"light"} />, app);
+
         response("loaded");
         return true;
     }
 };
-
+/*
 chrome.runtime.onConnect.addListener((port) => {
     port.onMessage.addListener((msg) => {
         // Handle message however you want
         console.log(msg);
     });
 });
+*/
 
-if(!externalExtension)
-chrome.runtime.onMessage.addListener(messagesFromReactAppListener);
+if (!externalExtension)
+    chrome.runtime.onMessage.addListener(messagesFromReactAppListener);
+
+/*
+
+        for(const child of document.body.children){
+            if(child.style?.position?.indexOf("relative") === -1){
+                child.style.position = "relative";
+                if(child.style.top)
+                    child.style.top = `${parseInt(child.style.top,10)+200}px`
+                else
+                    child.style.top = '200px';
+            }
+        }
+        */

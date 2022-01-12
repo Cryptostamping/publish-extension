@@ -58,7 +58,7 @@
 }
 
 .stamp_img:hover {
-	transform: scale(1.02, 1.02);
+	// transform: scale(1.02, 1.02);
 }
 
 .stamp_info {
@@ -87,21 +87,21 @@
 }
 
 .infinity {
-	background: url("https://embed.cryptostamping.org/icons/infinity.svg");
+	background: url($asset-url+"/icons/infinity.svg");
 	background-position: center;
 	background-size: cover;
 	filter: $f-skyblue;
 }
 
 .valued {
-	background: url("https://embed.cryptostamping.org/icons/verified.svg");
+	background: url($asset-url+"/icons/verified.svg");
 	background-position: center;
 	background-size: cover;
 	filter: $f-yellow;
 }
 
 .verified {
-	background: url("https://embed.cryptostamping.org/icons/verified.svg");
+	background: url($asset-url+"/icons/verified.svg");
 	background-position: center;
 	background-size: cover;
 	filter: $f-green;
@@ -150,23 +150,27 @@
 }
 
 .goto {
-	background: url("https://embed.cryptostamping.org/icons/open_in_new.svg");
+	background: url($asset-url+"/icons/open_in_new.svg");
 	filter: var(--f-grey);
 }
 
 .list{
-	background: url("https://embed.cryptostamping.org/icons/view_list.svg");
+	background: url($asset-url+"/icons/view_list.svg");
 	filter: var(--f-grey);
 }
 
+.up_align{
+	background: url($asset-url+"/icons/up_align.svg");
+	filter: var(--f-grey);
+}
 
 .rarity {
-	background: url("https://embed.cryptostamping.org/icons/cryptostamping.svg");
+	background: url($asset-url+"/icons/cryptostamping.svg");
 	filter: $f-yellow;
 }
 
 .check{
-	background: url("https://embed.cryptostamping.org/icons/check_fill.svg");
+	background: url($asset-url+"/icons/check_fill.svg");
 	max-width: 0.8em;
 	max-height: 0.8em;
 	margin-left: 0.5em;
@@ -238,6 +242,14 @@
 	white-space: pre-line;
 	-webkit-line-clamp: 1;
 	-webkit-box-orient: vertical;
+}
+
+.title4{
+	font-size: 24px;
+	font-family: "Roboto", sans-serif;
+	font-weight: 900;
+	margin-bottom: 5px !important;
+	color: var(--black);
 }
 
 .top_zero{
@@ -372,6 +384,21 @@
 	box-shadow: 0px 2px 8px 4px rgba(0, 0, 0, 0.05);
 }
 
+.plugin_header,
+.plugin_footer{
+	width: 100%;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+}
+
+.plugin_header{
+	justify-content: flex-start;
+	padding: 15px 0 20px 0;
+	margin-bottom: 10px;
+	border-bottom: 1px solid var(--white-8);
+}
+
 
 /* SMALL SCREENS */
 
@@ -420,17 +447,24 @@
 		display: none;
 	}
 
+	.plugin_header{
+		padding: 15px;
+	}
+
 }
 
 /* MEDIUM SCREENS */
 
 @media only screen and (min-width: 768px) and (max-width: 991.98px) {
 
+	.plugin_header{
+		padding: 15px;
+	}
 	
 }
 
 /* LARGE SCREENS */
 
 @media only screen and (min-width: 992px) and (max-width: 1199.98px) {
-	
+
 }

@@ -23,6 +23,7 @@ module.exports = function override(config, env) {
     background: "./src/chrome/background.js",
   };
   config.output.filename = "static/js/[name].js";
+  // config.output.filename = "static/css/[name].css";
   config.optimization.splitChunks = {
     cacheGroups: {
       default: false,

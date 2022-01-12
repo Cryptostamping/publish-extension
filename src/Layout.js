@@ -1,10 +1,6 @@
 /* global chrome */
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
-import createMetaMaskProvider from "metamask-extension-provider";
-
-import { MoralisProvider } from "react-moralis";
-import { Provider } from "react-redux";
 
 import Tooltip from "~/src/components/modals/tooltip";
 import CryptoStamper from "~/src/components/cryptostamper/main";
@@ -13,8 +9,10 @@ import {
   MOLARIS_SERVER_URL,
   FRONTEND_BASE_URL,
 } from "~/src/lib/data";
-import {useConnect} from "~/src/lib/web3";
+import { printAddress } from "~/src/lib/utils";
+import { sendChromeMessage } from "~/src/lib/plugin";
 
+import selector from "~/src/components/cryptostamper/selector.module.scss";
 import styles from "~/src/styles/pages/layout.module.scss";
 
 import store from "~/src/lib/redux/store";
@@ -24,82 +22,71 @@ const version = process.env.REACT_APP_VERSION;
 function Layout({ domElement }) {
   const [theme, setTheme] = useState("light");
   const [url, setUrl] = useState(null);
-  const [provider, setProvider] = useState();
   const [subtitle, setSubtitle] = useState("To fetch your stamps.");
-  const {
-    address,
-    accounts,
-    connectWallet,
-    setProvider: setConnectProvider,
-  } = useConnect();
+  const [isConnected, SetConnected] = useState(false);
+  const [address, setAddress] = useState(null);
 
   useEffect(() => {
-    setProvider(createMetaMaskProvider());
-  }, []);
-  useEffect(() => {
-    if (provider) {
-      setConnectProvider(provider);
-      provider.on("error", (error) => {
-        if (error && error.includes("lost connection")) {
-          setSubtitle("MetaMask extension not detected.");
-        }
-      });
-    }
-  }, [provider, setConnectProvider]);
-
-  useEffect(() => {
-    const queryInfo = { active: true, lastFocusedWindow: true };
-
     chrome.tabs &&
-      chrome.tabs.query(queryInfo, (tabs) => {
+      chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
         const url = tabs[0].url;
         setUrl(url);
         //console.log(url);
       });
+    sendChromeMessage({
+      type: "ethereum",
+      key: "provider_address",
+      from: "popup",
+    }).then((res) => {
+      if (res.address) {
+        setAddress(res.address);
+        SetConnected(true);
+      }
+    });
   }, []);
 
-  const sendTestMessage = () => {
-    console.log(provider);
-    const message = {
-      from: "background",
-      message: "embed_stamper"
-    };
-    const queryInfo = {
-      active: true,
-      currentWindow: true,
-    };
-    chrome.tabs &&
-      chrome.tabs.query(queryInfo, (tabs) => {
-        console.log(tabs);
-        const currentTabId = tabs[0].id;
-        chrome.tabs.sendMessage(currentTabId, message, (response) => {
-          console.log(response);
-        });
-      });
-
-  };
-
   const connectMetamask = () => {
-    /*connectWallet()
+    sendChromeMessage({
+      type: "ethereum",
+      key: "connect_wallet",
+      from: "popup",
+    })
       .then((res) => {
-        const currentUser = Moralis.User.current();
-        if (currentUser) {
-          dispatch(setUser(currentUser.toJSON()));
-          return;
-        }
-        return Moralis.authenticate({
-          signingMessage:
-            "Hey there, this seems to be your first time stamping here. Please sign to verify this is you. This will not charge any gas transaction fee.",
-        });
+        return sendChromeMessage(
+          {
+            from: "background",
+            message: "embed_stamper",
+          },
+          {
+            active: true,
+            currentWindow: true,
+          }
+        );
       })
-      .then(() => {
-        openSelector(address);
+      .then((res) => {
+        window.close();
+        chrome.browserAction.setIcon({ path: "logo48_add.png" });
+        chrome.browserAction.setPopup({
+          popup: "",
+        });
       })
       .catch((err) => {
         console.log(err);
-      });*/
-  }
+      });
+  };
 
+  if (isConnected) {
+    return (
+      <div
+        className={`${styles.initial_lay} cryptostamping-wrapper`}
+        data-theme={theme}
+      >
+        <img className={styles.logo_image} src="/logo_favicon.svg" alt="" />
+        <h1 className={styles.logo_title}>Cryptostamping</h1>
+        <p className={selector.bold_subtitle}>{printAddress(address)}</p>
+      </div>
+    );
+  }
   return (
     <div
       className={`${styles.initial_lay} cryptostamping-wrapper`}
@@ -108,7 +95,7 @@ function Layout({ domElement }) {
       <img className={styles.logo_image} src="/logo_favicon.svg" alt="" />
       <h1 className={styles.logo_title}>Cryptostamping</h1>
       <p className={styles.logo_subtitle}>Version {version}</p>
-      <div onClick={sendTestMessage} className={styles.connect_btn}>
+      <div onClick={connectMetamask} className={styles.connect_btn}>
         <img
           className={styles.icon_metamask}
           src="/icons/metamask.png"

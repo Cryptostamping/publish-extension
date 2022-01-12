@@ -108,32 +108,32 @@
 }
 
 .global{
-	background: url('https://embed.cryptostamping.org/icons/public.svg');
+	background: url($asset-url+'/icons/public.svg');
 	filter: var(--f-grey);
 }
 
 .people{
-	background: url('https://embed.cryptostamping.org/icons/people.svg');
+	background: url($asset-url+'/icons/people.svg');
 	filter: var(--f-grey);
 }
 
 .back{
-	background: url('https://embed.cryptostamping.org/icons/back.svg');
+	background: url($asset-url+'/icons/back.svg');
 	filter: var(--f-grey);
 }
 
 .delete{
-	background: url('https://embed.cryptostamping.org/icons/delete_fill.svg');
+	background: url($asset-url+'/icons/delete_fill.svg');
 	filter: var(--f-grey);
 }
 
 .copy{
-	background: url('https://embed.cryptostamping.org/icons/content_copy.svg');
+	background: url($asset-url+'/icons/content_copy.svg');
 	filter: var(--f-grey);
 }
 
 .goto{
-	background: url('https://embed.cryptostamping.org/icons/open_in_new.svg');
+	background: url($asset-url+'/icons/open_in_new.svg');
 	filter: var(--f-grey);
 }
 

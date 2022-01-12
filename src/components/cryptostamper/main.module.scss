@@ -10,6 +10,30 @@
 	font-family: $global-fonts;
 }
 
+.plugin_container{
+	display: flex;
+	position: relative;
+	width: 100%;
+	align-items: stretch;
+	font-family: $global-fonts;
+}
+
+.plugin_infobar{
+	display: block;
+	flex-direction: column;
+	justify-content: center;
+	align-items: flex-start;
+	width: 20%;
+	margin-left: 30px;
+}
+
+.plugin_titlebar{
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;
+	margin-left: 15px;
+}
+
 .banner_infobar{
 	display: block;
 	flex-grow: 1;
@@ -59,6 +83,51 @@
 	width: 100%;
 }
 
+.arrow_container{
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	padding: 0 10px;
+}
+
+.btn_arrow{
+	display: block;
+	cursor: pointer;
+	padding: 8px;
+	border-radius: 50%;
+	background: var(---white);
+	transition: box-shadow 0.33s ease;
+}
+
+.btn_arrow.enabled{
+	box-shadow: 0px 2px 8px 4px rgba(0, 0, 0, 0.05);
+}
+
+.btn_arrow.enabled:hover,
+.btn_arrow.enabled:focus{
+	box-shadow: 0px 2px 8px 4px rgba(0, 0, 0, 0.1);
+}
+
+.left{
+	background: url($asset-url+"/icons/seeless.svg");
+}
+
+.right{
+	background: url($asset-url+"/icons/seemore.svg");
+}
+
+.icon_arrow{
+	display: block;
+	min-width: 24px;
+	min-height: 24px;
+	background-position: center;
+	background-size: cover;
+}
+
+.icon_arrow.disabled{
+	opacity: 0.25;
+}
+
 .list_lay{
 	display: flex;
 	justify-content: center;
@@ -100,7 +169,13 @@
 	align-items: center;
 }
 
-.stamp_frame{
+.noshadow{
+	box-shadow: none !important;
+}
+
+
+.stamp_frame,
+.stamp_frame_mini{
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -113,6 +188,14 @@
 	cursor: pointer;
 	position: relative;
 	overflow: hidden;
+}
+
+.stamp_frame_mini{
+	max-width: 35px;
+	max-height: 50px;
+	min-width: 35px;
+	min-height: 50px;
+	border-radius: 6px;
 }
 
 .stamp_frame.borderless{
@@ -213,20 +296,27 @@
 	filter: var(--f-black);
 }
 
+.stamp_frame_mini .stamp_icon{
+	min-width: 24px;
+	min-height: 24px;
+}
+
 .stamp_frame:hover .stamp_icon,
-.stamp_frame:focus .stamp_icon{
+.stamp_frame:focus .stamp_icon,
+.stamp_frame_mini:hover .stamp_icon,
+.stamp_frame_mini:focus .stamp_icon{
 	opacity: 1;
 	transform: scale(1,1);
 }
 
 .edit_icon{
-	background: url("https://embed.cryptostamping.org/icons/edit.svg");
+	background: url($asset-url+"/icons/edit.svg");
 	background-position: center;
 	background-size: cover;
 }
 
 .add_icon{
-	background: url("https://embed.cryptostamping.org/icons/add_minimal.svg");
+	background: url($asset-url+"/icons/add_minimal.svg");
 	background-position: center;
 	background-size: cover;
 }
@@ -299,17 +389,52 @@
 		font-size: 8px;
 	}
 
+	.plugin_container{
+		flex-wrap: wrap-reverse;
+	}
+
+	.plugin_infobar{
+		width: 100%;
+		margin-left: 0;
+		margin-bottom: 10px;
+	}
+
+	.arrow_container{
+		display: none;
+	}
+
 }
 
 /* MEDIUM SCREENS */
 
 @media only screen and (min-width: 768px) and (max-width: 991.98px) {
 
-	
+	.plugin_container{
+		flex-wrap: wrap-reverse;
+	}
+
+	.plugin_infobar{
+		width: 100%;
+		margin-left: 0;
+		margin-bottom: 10px;
+	}
+
+	.arrow_container{
+		display: none;
+	}
 }
 
 /* LARGE SCREENS */
 
 @media only screen and (min-width: 992px) and (max-width: 1199.98px) {
+
+	.arrow_container{
+		display: none;
+	}
+
+	.plugin_infobar{
+		width: 25%;
+		margin-left: 30px;
+	}
 	
 }

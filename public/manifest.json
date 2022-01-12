@@ -20,14 +20,23 @@
   ],
   "browser_action": {
     "default_popup": "index.html",
-    "default_title": "Connect to Metamask"
+    "default_title": "Cryptostamping"
   },
   "background": {
     "scripts": ["chrome/background.js"],
-    "persistent": false
+    "persistent": true
   },
-  "permissions": ["<all_urls>", "activeTab", "tabs", "storage"],
-  "web_accessible_resources":[
-    "/static/css/*", "/static/js/*","/icons/*", "/logo_favicon.svg"
+  "permissions": [
+    "<all_urls>",
+    "activeTab",
+    "tabs",
+    "storage"
+  ],
+  "web_accessible_resources": [
+    "/static/css/*",
+    "/static/js/*",
+    "/icons/*",
+    "/fonts/*",
+    "/logo_favicon.svg"
   ]
 }

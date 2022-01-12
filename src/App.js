@@ -8,7 +8,7 @@ import { Provider } from "react-redux";
 import CryptoStamper from "~/src/components/cryptostamper/main";
 import { MOLARIS_APP_ID, MOLARIS_SERVER_URL } from "~/src/lib/data";
 
-import * as styles from "~/src/styles/pages/home.module.scss";
+import * as styles from "~/src/styles/pages/app.module.scss";
 
 import store from "~/src/lib/redux/store";
 
@@ -28,7 +28,7 @@ function App({domElement}) {
       <div className={styles.screen_one}>
         <MoralisProvider appId={MOLARIS_APP_ID} serverUrl={MOLARIS_SERVER_URL}>
         <Provider store={store}>
-          <CryptoStamper settings={{view: view || "button"}} theme={theme || "light"} />
+          <CryptoStamper settings={{view: view || "plugin"}} theme={theme || "light"} />
         </Provider>
         </MoralisProvider>
       </div>

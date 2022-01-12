@@ -86,6 +86,10 @@
 	overflow: hidden;
 }
 
+.bold_title2{
+	font-weight: 900;
+}
+
 .normal_subtitle{
 	font-size: 10px;
 	font-family: 'Roboto', sans-serif;
@@ -136,35 +140,35 @@
 }
 
 .link_add{
-	background: url('https://embed.cryptostamping.org/icons/add_link.svg');
+	background: url($asset-url+'/icons/add_link.svg');
 }
 
 .connect{
-	background: url('https://embed.cryptostamping.org/icons/link_black.svg');
+	background: url($asset-url+'/icons/link_black.svg');
 }
 
 .disconnect{
-	background: url('https://embed.cryptostamping.org/icons/link_off.svg');
+	background: url($asset-url+'/icons/link_off.svg');
 }
 
 .settings{
-	background: url('https://embed.cryptostamping.org/icons/settings.svg');
+	background: url($asset-url+'/icons/settings.svg');
 }
 
 .refresh{
-	background: url('https://embed.cryptostamping.org/icons/refresh.svg');
+	background: url($asset-url+'/icons/refresh.svg');
 }
 
 .resync{
-	background: url('https://embed.cryptostamping.org/icons/import_export.svg');
+	background: url($asset-url+'/icons/import_export.svg');
 }
 
 .goto{
-	background: url('https://embed.cryptostamping.org/icons/open_in_new.svg');
+	background: url($asset-url+'/icons/open_in_new.svg');
 }
 
 .close{
-	background: url('https://embed.cryptostamping.org/icons/icon_close.svg');
+	background: url($asset-url+'/icons/icon_close.svg');
 }
 
 .icon{
@@ -176,11 +180,17 @@
 	filter: var(--f-black);
 }
 
+.mini_icon{
+	width: 14px;
+	height: 14px;
+}
+
 .logo_icon{
 	display: block;
 	width: 40px;
+	min-width: 40px;
 	height: 40px;
-	object-fit: cover;
+	object-fit: contain;
 	object-position: center;
 }
 
@@ -260,23 +270,23 @@
 
 
 .etherium_icon{
-	background: url("https://embed.cryptostamping.org/icons/sq_etherium.svg");
+	background: url($asset-url+"/icons/sq_etherium.svg");
 }
 
 .binance_icon{
-	background: url("https://embed.cryptostamping.org/icons/sq_binance.svg");
+	background: url($asset-url+"/icons/sq_binance.svg");
 }
 
 .polygon_icon{
-	background: url("https://embed.cryptostamping.org/icons/sq_polygon.svg");
+	background: url($asset-url+"/icons/sq_polygon.svg");
 }
 
 .avalanche_icon{
-	background: url("https://embed.cryptostamping.org/icons/sq_avalanche.svg");
+	background: url($asset-url+"/icons/sq_avalanche.svg");
 }
 
 .stamps_icon{
-	background: url("https://embed.cryptostamping.org/icons/cards.svg");
+	background: url($asset-url+"/icons/cards.svg");
 	filter: $f-pink;
 }
 
@@ -466,21 +476,21 @@
 }
 
 .list{
-	background: url("https://embed.cryptostamping.org/icons/view_list.svg");
+	background: url($asset-url+"/icons/view_list.svg");
 }
 
 .grid{
-	background: url("https://embed.cryptostamping.org/icons/view_grid.svg");
+	background: url($asset-url+"/icons/view_grid.svg");
 }
 
 .down{
-	background: url("https://embed.cryptostamping.org/icons/up.svg");
+	background: url($asset-url+"/icons/up.svg");
 	transform: rotate(180deg);
 	margin-left: 4px;
 }
 
 .up{
-	background: url("https://embed.cryptostamping.org/icons/up.svg");
+	background: url($asset-url+"/icons/up.svg");
 	transform: rotate(0deg);
 	margin-left: 4px;
 }

@@ -1,0 +1,25 @@
+[
+	{
+		"id": 1,
+		"priority": 1,
+		"action": {
+			"type": "modifyHeaders",
+			"responseHeaders": [
+				{
+					"header": "Content-Security-Policy",
+					"operation": "append",
+					"value": "font-src * data:; media-src * data: blob:; img-src * blob: data:;"
+				},
+				{
+					"header": "Content-Security-Policy",
+					"operation": "set",
+					"value": "font-src * data:; media-src * data: blob:; img-src * blob: data:;"
+				}
+			]
+		},
+		"condition" : {
+			"urlFilter" : "|https*",
+			"resourceTypes": ["main_frame"]
+		}
+	}
+]

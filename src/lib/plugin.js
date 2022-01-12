@@ -21,27 +21,54 @@ export async function createSigningData(Moralis, message) {
 }
 
 export async function getFromStorage(key) {
-    return new Promise((resolve, reject) => {
-        chrome.storage.sync.get(key, resolve);
-    })
-    .then(result => {
-      if (key == null) return result;
-      else return result[key];
-    });
+  return new Promise((resolve, reject) => {
+    chrome.storage.sync.get(key, resolve);
+  }).then((result) => {
+    if (key == null) return result;
+    else return result[key];
+  });
 }
 
+export const sendChromeMessage = (message, tabQuery) => {
+  return new Promise((resolve, reject) => {
+    if (tabQuery) {
+      chrome.tabs.query(tabQuery, (tabs) => {
+        const currentTabId = tabs[0].id;
+        chrome.tabs.sendMessage(currentTabId, message, (res) => {
+          if (!res.error) {
+            resolve(res);
+          }
+          reject(res.error);
+        });
+      });
+    } else {
+      chrome.runtime.sendMessage(message, (res) => {
+        if (!res.error) {
+          resolve(res);
+        }
+        reject(res.error);
+      });
+    }
+  });
+};
+
 export async function MoralisLogin(Moralis, response) {
-  const _sign_data = await createSigningData(Moralis, APP_SIGNING_MSG);
   const authData = {
-    id: response.address,
+    id: response.from,
     signature: response.signature,
-    data: _sign_data,
+    data: response.data,
   };
-  const _user = await Moralis.User.logInWith("moralisDot", { authData });
+  const isLoggedIn = await Moralis.User.currentAsync();
+  if (isLoggedIn) {
+    await Moralis.User.logOut();
+  }
+  Moralis.cleanup();
+  console.log(response);
+  const _user = await Moralis.User.logInWith("moralisEth", { authData });
   await _user.setACL(new Moralis.ACL(_user));
-  _user.addAllUnique("dotAccounts", [response.address]);
-  _user.set("dotAddress", response.address);
-  await _user.save();
+  _user.addAllUnique("accounts", [response.from]);
+  _user.set("ethAddress", response.from);
+  await _user.save(null, { signingMessage: APP_SIGNING_MSG });
   return _user;
 }
 
@@ -49,15 +76,15 @@ export const moralisQueryConstructor = (Moralis, queryParams) => {
   const moralisClass = Moralis.Object.extend(queryParams.className);
   const query = new Moralis.Query(moralisClass);
   for (const containedIn of queryParams.containedIn) {
-    query.containedIn(containedIn.name, queryParams.containedIn.value);
+    query.containedIn(containedIn.name, containedIn.value);
   }
   for (const equalTo of queryParams.equalTo) {
-    query.equalTo(equalTo.name, queryParams.equalTo.value);
+    query.equalTo(equalTo.name, equalTo.value);
   }
-  if(queryParams.sort) {
+  if (queryParams.sort) {
     query[queryParams.sort.order](queryParams.sort.name);
   }
-  if(queryParams.limit) {
+  if (queryParams.limit) {
     query.limit(queryParams.limit);
   }
   if (queryParams.exec === "find") return query.find();
@@ -77,24 +104,24 @@ export const generateMoralisQuery = (type, params) => {
           value: params?.testnet ? supportedTestChains : supportedMainChains,
         },
       ],
-      equalTo: []
+      equalTo: [],
     };
-    if(params.url){
+    if (params.url) {
       query.equalTo.push({
-          name: "web_id",
-          value: `${params?.url}${
-            params?.embedId ? "-embed-" + params?.embedId : ""
-          }`,
-        });
+        name: "web_id",
+        value: `${params?.url}${
+          params?.embedId ? "-embed-" + params?.embedId : ""
+        }`,
+      });
     }
-    if(params.address){
+    if (params.address) {
       query.equalTo.push({ name: "user_address", value: params?.address });
     }
-    if(params.sort){
+    if (params.sort) {
       query.sort = {
         name: params.sort,
-        order: params.sort_order ? "descending" : "ascending"
-      }
+        order: params.sort_order ? "descending" : "ascending",
+      };
     }
     return query;
   }
@@ -123,8 +150,8 @@ export const createSignMessage = (web3, msg, _address) => {
 
           if (recovered === _address) {
             resolve({
-              address: _address,
-              signature: JSON.stringify(result.result),
+              from: _address,
+              signature: result.result,
               signature_data: JSON.stringify(msgParams),
             });
           } else {
@@ -157,7 +184,9 @@ export class CryptostampingProvider {
 
   removeListener(name, listenerToRemove) {
     if (!this._events[name]) {
-      throw new Error(`Can't remove a listener. Event "${name}" doesn't exits.`);
+      throw new Error(
+        `Can't remove a listener. Event "${name}" doesn't exits.`
+      );
     }
 
     const filterListeners = (listener) => listener !== listenerToRemove;

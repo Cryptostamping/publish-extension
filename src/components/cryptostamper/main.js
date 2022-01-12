@@ -12,6 +12,7 @@ import styles from "~/src/components/cryptostamper/selector.module.scss";
 
 import StampSelector from "~/src/components/cryptostamper/selector";
 import StampLister from "~/src/components/cryptostamper/lister";
+import TrayScroller from "~/src/components/cryptostamper/trayscroller";
 import Tooltip from "~/src/components/modals/tooltip";
 
 import { useConnect, useChain } from "~/src/lib/web3";
@@ -34,6 +35,7 @@ import {
 	MoralisLogin,
 	moralisQueryConstructor,
 	generateMoralisQuery,
+	createSigningData,
 } from "~/src/lib/plugin";
 
 import {
@@ -83,7 +85,7 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 		<div className={main.stamp_frame_container} style={style}>
 			<Tooltip
 				delay={0}
-				on={["hover", "click"]}
+				on={[ "hover", "click"]}
 				position={[
 					"top center",
 					"top left",
@@ -92,7 +94,9 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 					"bottom left",
 					"bottom right",
 				]}
-				popupClass={main.zoomin_popup}
+				arrow={true}
+				shadow={true}
+				popupClass={main.noshadow}
 				closeOnClick={true}
 				theme={dataTheme}
 				nested={true}
@@ -100,7 +104,7 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 					<div className={`${main.stamp_frame} ${main.borderless} `}>
 						{stamping.metadata?.stamp_vid && (
 							<video
-								className={`${main.stamp_image} ${main.visible} ${main.hovarable}`}
+								className={`${main.stamp_image} ${main.visible}`}
 								src={stamping.metadata?.stamp_vid}
 								controls={false}
 								autoPlay={true}
@@ -112,7 +116,7 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 						)}
 						{!stamping.metadata?.stamp_vid && (
 							<img
-								className={`${main.stamp_image} ${main.visible} ${main.hovarable}`}
+								className={`${main.stamp_image} ${main.visible}`}
 								src={
 									stamping.metadata?.stamp ||
 									stamping.metadata?.image
@@ -274,13 +278,14 @@ function CryptoStamper({ provider, settings, theme }) {
 	const {
 		provider: ethereumProvider,
 		address,
+		setAddress,
 		connectWallet,
 		setProvider,
 	} = useConnect();
 
 	const { chainId } = useChain();
 
-	const [view, setView] = useState("button");
+	const [view, setView] = useState(settings?.view || "button");
 	const url = useSelector((state) => state.stamper.url);
 	const title = useSelector((state) => state.stamper.title);
 	const embedId = useSelector((state) => state.stamper.embedId);
@@ -326,9 +331,7 @@ function CryptoStamper({ provider, settings, theme }) {
 		let _title = settings?.title || window.top.document.title;
 		let index = _url.indexOf("?");
 		let display_url = index > -1 ? _url?.substr(0, index) : _url;
-		let _testnet =
-			settings?.testnet ||
-			(_url.indexOf("testnet=true") > -1 ? true : false);
+		let _testnet = _url.indexOf("testnet=true") > -1 ? true : false;
 
 		dispatch(
 			setSettings({
@@ -435,17 +438,23 @@ function CryptoStamper({ provider, settings, theme }) {
 			return;
 		}
 		if (window.cryptostamping) {
-			window.cryptostamping.ethereum.connectWallet((response) => {
-				if (!response.error) {
-					MoralisLogin(Moralis, response)
-						.then((_user) => {
-							openSelector(address);
-						})
-						.catch((err) => {
-							console.log(err);
-						});
-				}
-			});
+			createSigningData(Moralis, APP_SIGNING_MSG)
+				.then((sign_message) => {
+					return window.cryptostamping.ethereum.connectWallet(
+						sign_message
+					);
+				})
+				.then((response) => {
+					setAddress(response.from);
+					return MoralisLogin(Moralis, response);
+				})
+				.then((_user) => {
+					if (_user) dispatch(setUser(_user.toJSON()));
+					openSelector(_user.attributes.ethAddress);
+				})
+				.catch((err) => {
+					console.log(err);
+				});
 			return;
 		}
 		connectWallet()
@@ -474,6 +483,12 @@ function CryptoStamper({ provider, settings, theme }) {
 
 	const handleStampsListing = () => {
 		dispatch(setStampLister(true));
+	};
+
+	const closePlugin = () => {
+		if (window.cryptostamping) {
+			window.cryptostamping.closeEmbed();
+		}
 	};
 
 	return (
@@ -547,6 +562,81 @@ function CryptoStamper({ provider, settings, theme }) {
 					</div>
 				</div>
 			)}
+			{view === "plugin" && (
+				<div className={`${main.plugin_container}`}>
+					<div className={`${main.list_container}`}>
+						<AutoSizer disableHeight>
+							{({ width }) => (
+								<List
+									ref={listRef}
+									height={120}
+									outerElementType={TrayScroller}
+									className={`${main.list_lay} ${main.horiz_scroll} ${main.justify_start}`}
+									itemCount={stampings?.length}
+									itemData={stampings}
+									itemSize={100}
+									width={width}
+									layout="horizontal"
+								>
+									{renderMiniStamp}
+								</List>
+							)}
+						</AutoSizer>
+					</div>
+					<div className={`${main.plugin_infobar}`}>
+						<div className={card.plugin_header}>
+							<div
+								onClick={handleAddStamp}
+								className={main.stamp_frame_mini}
+							>
+								<span
+									className={`${main.stamp_icon} ${
+										currentStamping
+											? main.edit_icon
+											: main.add_icon
+									}`}
+								/>
+							</div>
+							<div className={main.plugin_titlebar}>
+								<h3 className={`${card.title4}`}>
+									{stampingsCount} Stamps
+								</h3>
+								<p
+									onClick={handleStampsListing}
+									className={`${card.address} csbs-m-0`}
+								>
+									{getRandPrice(
+										title?.length * stampingsCount
+									)}{" "}
+									ETH
+								</p>
+							</div>
+						</div>
+						<div className={card.plugin_footer}>
+							<div>
+								<div
+									onClick={handleStampsListing}
+									className={`${card.subtitle2} csbs-d-flex csbs-align-items-center`}
+								>
+									View all Stamps
+									<span
+										className={`${card.icon} ${card.small} ${card.list} csbs-ml-2 csbs-mr-1`}
+									/>
+								</div>
+							</div>
+							<div
+									onClick={closePlugin}
+									className={`${card.subtitle2} csbs-d-flex csbs-align-items-center`}
+								>
+									Hide
+									<span
+										className={`${card.icon} ${card.small} ${card.up_align} csbs-ml-2 csbs-mr-1`}
+									/>
+								</div>
+						</div>
+					</div>
+				</div>
+			)}
 			{view === "button" && (
 				<div className={`${main.stamp_conatiner} csbs-p-2`}>
 					<StampFrame
@@ -612,7 +702,7 @@ function CryptoStamper({ provider, settings, theme }) {
 					Web3Api={Web3Api}
 					Moralis={Moralis}
 					ethereumProvider={ethereumProvider}
-					chainId={chainId}
+					chainId={chainId || (testnet ? 3 : 1)}
 				/>
 			)}
 

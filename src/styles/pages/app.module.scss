@@ -1,0 +1,14 @@
+.container{
+	width: 100vw;
+	background: #FFF !important;
+	padding: 0 20px 100px 20px;
+}
+
+
+/* SMALL SCREENS */
+
+@media only screen and (max-width: 767.98px) {
+	.container{
+		width: 100%;
+	}
+}

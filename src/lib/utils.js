@@ -192,6 +192,8 @@ export const printBalance = (_bal) => {
 }
 
 export const getRandPrice = (_index) => {
+  if(_index === 0)
+    return "0.000";
   if(_index >= 0)
   return _index/1000;
   return Math.floor((Math.random() * 999) + 1)/1000;

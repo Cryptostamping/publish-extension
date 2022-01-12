@@ -39,22 +39,20 @@ provider.on("disconnect", (accounts) => {
   setupPopup();
 });
 
-
 const setupPopup = () => {
-  chrome.storage.sync.get(["address"], ({ address }) => {
-    if (address) {
-      chrome.browserAction.setIcon({ path: "logo48_add.png" });
-      chrome.browserAction.setPopup({
-        popup: "",
-      });
-    } else {
-      chrome.browserAction.setIcon({ path: "logo48.png" });
-      chrome.browserAction.setPopup({
-        popup: "index.html",
-      });
-    }
-  });
-}
+  if (!provider.selectedAddress) {
+    chrome.browserAction.setIcon({ path: "logo48.png" });
+    chrome.browserAction.setPopup({
+      popup: "index.html",
+    });
+  } else {
+    chrome.browserAction.setIcon({ path: "logo48_add.png" });
+    chrome.browserAction.setPopup({
+      popup: "",
+    });
+  }
+  //chrome.storage.sync.get(["address"], ({ address }) => {});
+};
 
 const setupEmmitter = (emit_data) => {
   chrome.tabs &&
@@ -72,7 +70,7 @@ const setupEmmitter = (emit_data) => {
         });
       }
     );
-}
+};
 
 const messagesFromContentListener = (message, sender, response) => {
   /*if (message.type === "moralis") {
@@ -93,27 +91,63 @@ const messagesFromContentListener = (message, sender, response) => {
     }
   }
   */
+
+  if (message.key === "syncPopup") {
+    setupPopup();
+  }
+
   if (message.type === "ethereum") {
-    if (message.key === "connect_wallet") {
+    if (message.key === "connect_wallet" && message.from === "popup") {
       provider
         .request({
           method: "eth_requestAccounts",
           params: [],
         })
         .then((accounts) => {
-          var msg = `0x${Buffer.from(APP_SIGNING_MSG, "utf8").toString("hex")}`;
+          const _address = accounts[0];
+          chrome.storage.sync.set({ address: _address });
+          setupPopup();
+          response({address: _address});
+        })
+        .catch((err) => {
+          response({ error: err });
+        });
+      return true;
+    }
+    if (message.key === "connect_wallet" && message.from === "content") {
+      provider
+        .request({
+          method: "eth_requestAccounts",
+          params: [],
+        })
+        .then((accounts) => {
+          if (accounts?.length <= 0) throw new Error("No Accounts connected");
+          return Promise.all([getFromStorage("sign_data"), accounts]);
+        })
+        .then((response) => {
+          const sign_data = response[0];
+          const accounts = response[1];
+          const current_address = accounts[0];
+          //if (sign_data?.from === current_address) {
+          //  return sign_data;
+          //}
+          var msg = `0x${Buffer.from(message.sign_message, "utf8").toString(
+            "hex"
+          )}`;
           const _address = accounts[0];
           chrome.storage.sync.set({ address: _address });
           return createSignMessage(web3, msg, _address);
         })
         .then((result) => {
-          console.log(result);
           response({
             signature: result.signature,
-            address: result.address,
+            from: result.from,
+            data: message.sign_message,
           });
+          chrome.storage.sync.set({ sign_data: result });
         })
         .catch((err) => {
+          console.log(err);
           response({ error: err });
         });
       return true;
@@ -128,7 +162,7 @@ const messagesFromContentListener = (message, sender, response) => {
           response({
             signature: result.signature,
             signature_data: result.signature_data,
-            address: result.address,
+            from: result.address,
           });
         })
         .catch((err) => {
@@ -158,6 +192,11 @@ const messagesFromContentListener = (message, sender, response) => {
       });
       return true;
     }
+
+    if(message.key === "provider_address"){
+      response({address: provider?.selectedAddress});
+      return true;
+    }
   }
 };
 
@@ -172,7 +211,6 @@ chrome.browserAction.onClicked.addListener(function (tab) {
   chrome.tabs &&
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       var activeTab = tabs[0];
-      console.log(activeTab);
       chrome.tabs.sendMessage(activeTab.id, {
         from: "background",
         message: "embed_stamper",
@@ -185,23 +223,43 @@ chrome.runtime.onStartup.addListener(() => {
 });
 
 chrome.runtime.onInstalled.addListener(() => {
-  setupPopup();
+  chrome.storage.sync.set({ address: null });
 });
 
 chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
-  chrome.storage.sync.get(["address"], ({ address }) => {
-    if (!address || tab.url === "chrome://newtab/") {
-      chrome.browserAction.setIcon({ path: "logo48.png" });
-      chrome.browserAction.setPopup({
-        tabId: tabId,
-        popup: "index.html",
-      });
-    } else {
-      chrome.browserAction.setIcon({ path: "logo48_add.png" });
-      chrome.browserAction.setPopup({
-        tabId: tabId,
-        popup: "",
-      });
-    }
-  });
+  if (!provider.selectedAddress || tab.url === "chrome://newtab/") {
+    chrome.browserAction.setIcon({ path: "logo48.png" });
+    chrome.browserAction.setPopup({
+      tabId: tabId,
+      popup: "index.html",
+    });
+  } else {
+    chrome.browserAction.setIcon({ path: "logo48_add.png" });
+    chrome.browserAction.setPopup({
+      tabId: tabId,
+      popup: "",
+    });
+  }
 });
+
+/*
+function isCSPHeader(headerName) {
+  return (headerName === 'CONTENT-SECURITY-POLICY') || (headerName === 'X-WEBKIT-CSP');
+}
+
+// Listens on new request
+chrome.webRequest.onHeadersReceived.addListener((details) => {
+  for (let i = 0; i < details.responseHeaders.length; i += 1) {
+    if (isCSPHeader(details.responseHeaders[i].name.toUpperCase())) {
+      const csp = 'default-src * \'unsafe-inline\' \'unsafe-eval\' data: blob:; ';
+      details.responseHeaders[i].value = csp;
+    }
+  }
+  return { // Return the new HTTP header
+    responseHeaders: details.responseHeaders,
+  };
+}, {
+  urls: ['<all_urls>'],
+  types: ['main_frame'],
+}, ['blocking', 'responseHeaders']);
+*/

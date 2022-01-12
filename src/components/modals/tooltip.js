@@ -19,7 +19,7 @@ const Tooltip = memo((props) => {
       position={props.position ? props.position : "top left"}
       on={props.on ? props.on : ["hover", "focus"]}
       keepTooltipInside={true}
-      className={`${props.theme}-cryptostamping-popup cryptostamping-popup`}
+      className={`${props.theme}-cryptostamping-popup cryptostamping-popup ${props.shadow ? "shadowed": ""} ${props.arrow ? "arrowed": ""}`}
       nested={false || props.nested}
     >
       {(close) => (

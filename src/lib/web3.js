@@ -158,7 +158,6 @@ export const useConnect = (provider_in) => {
   const [provider, setProvider] = useState(provider_in);
   const [isConnected, setConnected] = useState(false);
   const _isMounted = useRef(true);
-  const _isConnectCalled = useRef(false);
 
   useEffect(() => {
     _isMounted.current = true;
@@ -175,8 +174,7 @@ export const useConnect = (provider_in) => {
       setConnected(true);
     };
 
-    const handleConnect = (connectInfo) => {
-    };
+    const handleConnect = (connectInfo) => {};
 
     const handleDisconnect = (connectInfo) => {
       setAccounts([]);
@@ -186,7 +184,11 @@ export const useConnect = (provider_in) => {
 
     if (provider && provider?.type !== "cryptostamping") {
       if (provider?.selectedAddress) {
-        getAccounts({ requestPermission: true }).then(handleAccountsChanged);
+        getAccounts({ requestPermission: true })
+          .then(handleAccountsChanged)
+          .catch((err) => {
+            console.log(err);
+          });
       }
 
       provider.on("accountsChanged", handleAccountsChanged);
@@ -194,10 +196,23 @@ export const useConnect = (provider_in) => {
       provider.on("disconnect", handleDisconnect);
     }
 
-    if (provider?.type === "cryptostamping") {
-      if (window.cryptostamping.isConnected()) {
-        window.cryptostamping.ethereum.getAccounts(handleAccountsChanged);
-      }
+    if (provider?.type === "cryptostamping" && window.cryptostamping) {
+      window.cryptostamping
+        .selectedAddress()
+        .then((_selAddress) => {
+          if (!_selAddress) {
+            throw "Not Connected";
+          }
+          setAddress(_selAddress);
+          return window.cryptostamping.ethereum.getAccounts({
+            requestPermission: true,
+          });
+        })
+        .then(handleAccountsChanged)
+        .catch((err) => {
+          console.log(err);
+        });
+
       window.cryptostamping.on("accountsChanged", handleAccountsChanged);
       window.cryptostamping.on("connect", handleConnect);
       window.cryptostamping.on("disconnect", handleDisconnect);
@@ -205,7 +220,6 @@ export const useConnect = (provider_in) => {
 
     return () => {
       _isMounted.current = false;
-      _isConnectCalled.current = false;
       if (provider && provider?.type !== "cryptostamping") {
         provider.removeListener("accountsChanged", handleAccountsChanged);
         provider.removeListener("connect", handleConnect);
@@ -228,10 +242,8 @@ export const useConnect = (provider_in) => {
       throw Error("Metamask is connected to cryptostamping.");
     if (!_isMounted.current) throw Error("Component is not mounted.");
     // if (_isConnectCalled.current) throw Error("Connect method already called.");
-    _isConnectCalled.current = true;
 
     return getAccounts({ requestPermission: true });
-    _isConnectCalled.current = false;
   };
 
   const getAccounts = (
@@ -253,7 +265,6 @@ export const useConnect = (provider_in) => {
         return accounts;
       })
       .catch((err) => {
-        throw err;
         setConnected(false);
       });
   };
@@ -271,6 +282,7 @@ export const useConnect = (provider_in) => {
 
   return {
     address,
+    setAddress,
     accounts,
     connectWallet,
     reConnectWallet,

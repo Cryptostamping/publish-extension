@@ -402,9 +402,8 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 									<div className={styles.tab_icons}>
 										<Tooltip
 											delay={0}
-											on={["hover", "click"]}
+											on={["click"]}
 											position={"bottom right"}
-											closeOnClick={true}
 											theme={dataTheme}
 											trigger={
 												<div
@@ -416,6 +415,7 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 													/>
 												</div>
 											}
+											closeOnClick={true}
 										>
 											<div className={styles.sort_list}>
 												{sortTypes.map((sortType) => {

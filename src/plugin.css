@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@300;400;500;700;900&display=swap');
+
+.extension_root{
+  width: 100%;
+  background: #FFF;
+  z-index: 99999;
+  position: sticky;
+  box-shadow: 2px 2px 8px 4px rgba(0, 0, 0, 0.08);
+  padding: 20px 20px;
+}
+
+.extension_root iframe{
+  width: 100%;
+  border:  none !important;
+  overflow-y: hidden;
+}
+
+.extension_root > iframe > html{
+  overflow-y: hidden;
+}

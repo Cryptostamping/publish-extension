@@ -134,7 +134,7 @@ function AddStamp({
 		} on the webapge ${url ? decodeURI(url) : "WARNING: ERROR"}.`;
 		setLoading(true);
 		const promise = window.cryptostamping
-			? window.cryptostamping.signMessage(txt_msg)
+			? window.cryptostamping.ethereum.signMessage(txt_msg)
 			: signMessage(txt_msg, address);
 		promise
 			.then((response) => {
@@ -191,7 +191,7 @@ function AddStamp({
 		} from the webapge ${url ? decodeURI(url) : "WARNING: ERROR"}.`;
 		setLoading(true);
 		const promise = window.cryptostamping
-			? window.cryptostamping.signMessage(txt_msg)
+			? window.cryptostamping.ethereum.signMessage(txt_msg)
 			: signMessage(txt_msg, address);
 		promise
 			.then((response) => {
