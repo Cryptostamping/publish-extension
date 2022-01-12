@@ -54,7 +54,7 @@ function Layout({ domElement }) {
       .then((res) => {
         return sendChromeMessage(
           {
-            from: "background",
+            from: "popup",
             message: "embed_stamper",
           },
           {

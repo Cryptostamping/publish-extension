@@ -130,7 +130,7 @@ class cryptostamping extends CryptostampingProvider {
 const messagesFromReactAppListener = (message, sender, response) => {
     if (
         sender.id === chrome.runtime.id &&
-        message.from === "background" &&
+        (message.from === "background" || message.from === "popup") &&
         message.message === "embed_stamper"
     ) {
         var link = document.createElement("link");
