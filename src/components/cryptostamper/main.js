@@ -85,7 +85,7 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 		<div className={main.stamp_frame_container} style={style}>
 			<Tooltip
 				delay={0}
-				on={[ "hover", "click"]}
+				on={["hover", "click"]}
 				position={[
 					"top center",
 					"top left",
@@ -433,13 +433,11 @@ function CryptoStamper({ provider, settings, theme }) {
 	}, [currentStamping, showStampSelector]);
 
 	const handleAddStamp = () => {
-		if (user) {
-			console.log(user, address);
-			openSelector(address);
-			return;
-		}
 		if (window.cryptostamping) {
-			console.log("asking..");
+			if (user && address) {
+				openSelector(address);
+				return;
+			}
 			createSigningData(Moralis, APP_SIGNING_MSG)
 				.then((sign_message) => {
 					console.log(sign_message);
@@ -459,6 +457,10 @@ function CryptoStamper({ provider, settings, theme }) {
 				.catch((err) => {
 					console.log(err);
 				});
+			return;
+		}
+		if (user) {
+			openSelector(address);
 			return;
 		}
 		connectWallet()
@@ -629,14 +631,14 @@ function CryptoStamper({ provider, settings, theme }) {
 								</div>
 							</div>
 							<div
-									onClick={closePlugin}
-									className={`${card.subtitle2} csbs-d-flex csbs-align-items-center`}
-								>
-									Hide
-									<span
-										className={`${card.icon} ${card.small} ${card.up_align} csbs-ml-2 csbs-mr-1`}
-									/>
-								</div>
+								onClick={closePlugin}
+								className={`${card.subtitle2} csbs-d-flex csbs-align-items-center`}
+							>
+								Hide
+								<span
+									className={`${card.icon} ${card.small} ${card.up_align} csbs-ml-2 csbs-mr-1`}
+								/>
+							</div>
 						</div>
 					</div>
 				</div>

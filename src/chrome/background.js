@@ -166,7 +166,7 @@ const setupProvider = () => {
       if (message.key === "get_accounts") {
         provider
           .request({
-            method: "eth_requestAccounts",
+            method:  message.requestPermission ? "eth_requestAccounts" : "eth_accounts",
             params: [],
           })
           .then((accounts) => {

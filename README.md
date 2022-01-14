@@ -1,13 +1,11 @@
 # Cryptostamping Extension
 
-
 `npm run build` will bild the unpacked extension for chrome.
 
 
 ## Cryptostamping | Extension for browser.
 
-
-
+With the extension, users will be enabled to stamp their NFTs/Stamps on any webpages they visit. The extension is scope limited to only sign requests so, there will be no transaction requests occurring at any point.
 
 
 ## injected module window.cryptostamping

@@ -100,6 +100,18 @@ class cryptostamping extends CryptostampingProvider {
                 );
             });
         },
+
+        providerAddress: () => {
+            return new Promise((resolve, reject) => {
+                chrome.runtime.sendMessage(
+                    { type: "ethereum", key: "provider_address", from: "content" },
+                    (res) => {
+                        if (res.error) reject(res.error);
+                        else resolve(res.address);
+                    }
+                );
+            });
+        },
     };
 
     /*let moralis = {

@@ -174,7 +174,25 @@ export const useConnect = (provider_in) => {
       setConnected(true);
     };
 
-    const handleConnect = (connectInfo) => {};
+    const handleConnect = (connectInfo) => {
+      if (provider?.type === "cryptostamping" && window.cryptostamping) {
+        window.cryptostamping.ethereum
+          .getAccounts({
+            requestPermission: false,
+          })
+          .then(handleAccountsChanged)
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+      if (provider && provider?.type !== "cryptostamping") {
+        getAccounts({ requestPermission: false })
+          .then(handleAccountsChanged)
+          .catch((err) => {
+            console.log(err);
+          });
+      }
+    };
 
     const handleDisconnect = (connectInfo) => {
       setAccounts([]);
@@ -197,13 +215,12 @@ export const useConnect = (provider_in) => {
     }
 
     if (provider?.type === "cryptostamping" && window.cryptostamping) {
-      window.cryptostamping
-        .selectedAddress()
+      window.cryptostamping.ethereum
+        .providerAddress()
         .then((_selAddress) => {
-          if (!_selAddress) {
-            throw "Not Connected";
+          if (_selAddress) {
+            setAddress(_selAddress);
           }
-          setAddress(_selAddress);
           return window.cryptostamping.ethereum.getAccounts({
             requestPermission: true,
           });
@@ -303,7 +320,9 @@ export const useChain = () => {
 
     if (window.ethereum) {
       window.ethereum.on("chainChanged", handleChainChanged);
-      setChainId(fromHex(window.ethereum.chainId));
+      window.ethereum.request({ method: "eth_chainId" }).then((_chainId) => {
+        setChainId(fromHex(_chainId));
+      });
     }
     return () => {
       if (window.ethereum)
