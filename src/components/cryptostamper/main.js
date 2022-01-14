@@ -434,17 +434,21 @@ function CryptoStamper({ provider, settings, theme }) {
 
 	const handleAddStamp = () => {
 		if (user) {
+			console.log(user, address);
 			openSelector(address);
 			return;
 		}
 		if (window.cryptostamping) {
+			console.log("asking..");
 			createSigningData(Moralis, APP_SIGNING_MSG)
 				.then((sign_message) => {
+					console.log(sign_message);
 					return window.cryptostamping.ethereum.connectWallet(
 						sign_message
 					);
 				})
 				.then((response) => {
+					console.log("connected..", response);
 					setAddress(response.from);
 					return MoralisLogin(Moralis, response);
 				})
