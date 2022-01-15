@@ -38,6 +38,16 @@ class cryptostamping extends CryptostampingProvider {
     closeEmbed = () => {
         const app = document.getElementById("cryptostamping-root");
         app.style.display = "none";
+        for (var i = 0; i < document.body.children.length; i++) {
+            if (
+                document.body.children[i].tagName === "SCRIPT" ||
+                document.body.children[i].tagName === "NOSCRIPT"
+            ) {
+                continue;
+            }
+            document.body.children[i].style.position = "initial";
+            break;
+        }
     };
 
     isConnected = () => {

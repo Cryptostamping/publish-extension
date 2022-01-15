@@ -85,7 +85,7 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 		<div className={main.stamp_frame_container} style={style}>
 			<Tooltip
 				delay={0}
-				on={["hover", "click"]}
+				on={["hover", "focus"]}
 				position={[
 					"top center",
 					"top left",
@@ -130,70 +130,54 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 			>
 				<div className={`${card.stamping_info} ${main.hover_card}`}>
 					<div className={card.stamping_header}>
-						<div className="csbs-d-flex csbs-justify-content-between csbs-align-items-center csbs-px-3">
-							<div className="">
-								<a href=""></a>
-								<p
-									className={`${card.title3} ${card.top_zero}`}
+						<div className="">
+							<a href=""></a>
+							<p className={`${card.title3} ${card.top_zero}`}>
+								{stamping.metadata.name}
+							</p>
+							<div className="csbs-d-flex csbs-align-items-center">
+								<a
+									href={`https://cryptostamping.org/scan/${stamping.chain}/${stamping.token_address}`}
+									target="_blank"
+									rel="noreferrer"
+									className={`${card.subtitle} csbs-d-flex csbs-align-items-center`}
 								>
-									{stamping.metadata.name}
-								</p>
-								<div className="csbs-d-flex csbs-align-items-center">
-									<a
-										href={`https://cryptostamping.org/c/${stamping.token_address}`}
-										target="_blank"
-										rel="noreferrer"
-										className={`${card.subtitle} csbs-d-flex csbs-align-items-center`}
-									>
-										{stamping.token_name}
-										<span
-											className={`${card.icon} ${card.check}`}
-										/>
-									</a>
-									<div
-										onClick={handleCopyAddress}
-										className={card.address}
-									>
-										{printAddress(stamping.user_address)}
-									</div>
-								</div>
-							</div>
-							<div className="csbs-d-flex csbs-justify-content-start csbs-align-items-center csbs-pl-2">
-								<Tooltip
-									delay={0}
-									position="top center"
-									trigger={
-										<a
-											href={`https://cryptostamping.org/c/${stamping.token_address}`}
-											target="_blank"
-											rel="noreferrer"
-											className={`${styles.tab_btn}`}
-										>
-											<span
-												className={`${styles.tab_mini_icon} ${styles.goto}`}
-											/>
-										</a>
-									}
-								>
-									<p className="csbs-p-2">
-										Show stamping history
-									</p>
-								</Tooltip>
+									{stamping.token_name}
+									<span
+										className={`${card.icon} ${card.check}`}
+									/>
+								</a>
 							</div>
 						</div>
 					</div>
-					<p
-						className={`${card.description} ${
-							stamping.comment ? card.dark : card.light
-						} ${card.big} csbs-px-3`}
-					>
-						<span className={card.subtag}>
-							{prettyPrintDate(stamping.updatedAt)}{" "}
-							&nbsp;-&nbsp;&nbsp;
-						</span>
-						{stamping.comment || `No Comment Added...`}
-					</p>
-					<div className="csbs-d-flex csbs-justify-content-between csbs-align-items-end csbs-px-2">
+					<div className={`${card.stamping_midbar}`}>
+						<p
+							className={`${card.description} ${
+								stamping.comment ? card.dark : card.light
+							} ${card.big}`}
+						>
+							<span className={card.subtag}>
+								{prettyPrintDate(stamping.updatedAt)}{" "}
+								&nbsp;-&nbsp;&nbsp;
+							</span>
+							{stamping.comment || `No Comment Added...`}
+						</p>
+						<div className={`csbs-d-flex`}>
+							<span className={card.subtag}>
+								{"Owned by "}
+								&nbsp;-&nbsp;
+							</span>
+							<a
+								href={`https://cryptostamping.org/user/${stamping.user_address}`}
+								target="_blank"
+								rel="noreferrer"
+								className={card.address}
+							>
+								{printAddress(stamping.user_address)}
+							</a>
+						</div>
+					</div>
+					<div className={`${card.stamping_footer}`}>
 						<div className="csbs-d-flex csbs-justify-content-start csbs-align-items-center csbs-ml-1">
 							<span
 								className={`${card.icon} ${card.icon_padded_r}
@@ -209,13 +193,44 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 								</span>
 							</p>
 						</div>
-						<div
-							onClick={clickOpenList}
-							className={`${card.subtitle2} csbs-d-flex csbs-align-items-center`}
-						>
-							View all
-							<span
-								className={`${card.icon} ${card.small} ${card.list} csbs-ml-2 csbs-mr-1`}
+						<div className={`${card.icons_list}`}>
+							<Tooltip
+								delay={0}
+								position="top center"
+								theme={dataTheme}
+								nested={true}
+								trigger={
+									<a
+										href={`https://opensea.io/collection/${stamping.token_address}/${stamping.token_id}`}
+										target="_blank"
+										rel="noreferrer"
+										className={`${card.icon_link}`}
+									>
+										<span
+											className={`${card.icon} ${card.icon_opensea}`}
+										/>
+									</a>
+								}
+								description={"View on Opensea"}
+							/>
+							<Tooltip
+								delay={0}
+								position="top center"
+								theme={dataTheme}
+								nested={true}
+								trigger={
+									<a
+										href={`https://cryptostamping.org/scan/${stamping.chain}/${stamping.token_address}/${stamping.token_id}`}
+										target="_blank"
+										rel="noreferrer"
+										className={`${card.icon_link}`}
+									>
+										<span
+											className={`${card.icon} ${card.icon_cryptostamping}`}
+										/>
+									</a>
+								}
+								description={"Show Stamping History"}
 							/>
 						</div>
 					</div>
@@ -374,7 +389,7 @@ function CryptoStamper({ provider, settings, theme }) {
 				url,
 				embedId,
 				exec: "find",
-				sort: "createdAt",
+				sort: "updatedAt",
 				sort_order: true,
 				limit: 30,
 			});
@@ -446,7 +461,6 @@ function CryptoStamper({ provider, settings, theme }) {
 					);
 				})
 				.then((response) => {
-					console.log("connected..", response);
 					setAddress(response.from);
 					return MoralisLogin(Moralis, response);
 				})
@@ -519,15 +533,16 @@ function CryptoStamper({ provider, settings, theme }) {
 								}
 							>
 								<h3 className={`${main.title} csbs-mb-0`}>
-									{getRandPrice(
-										title?.length * stampingsCount
-									)}
+									{stampingsCount} Stamps
 								</h3>
 								<p
 									onClick={handleStampsListing}
 									className={card.address}
 								>
-									{stampingsCount} Stamps
+									{getRandPrice(
+										title?.length * stampingsCount
+									)}{" "}
+									ETH
 								</p>
 							</div>
 							<div
@@ -651,14 +666,23 @@ function CryptoStamper({ provider, settings, theme }) {
 						handleAddStamp={handleAddStamp}
 						animationState={animationState}
 					/>
+					<div className={`csbs-d-block csbs-pt-2`}>
+						<p
+							onClick={handleStampsListing}
+							className={`${card.address} csbs-m-0`}
+						>
+							{getRandPrice(title?.length * stampingsCount)} ETH
+						</p>
+					</div>
 					<div
 						onClick={handleStampsListing}
-						className={main.stamp_count}
+						className={`${main.stamp_count} ${main.reverse}`}
 					>
 						<p className={main.stamp_subtag}>
 							{stampingsCount > 0
 								? "+" + stampingsCount
-								: stampingsCount}
+								: stampingsCount}{" "}
+							nfts
 						</p>
 					</div>
 				</div>
@@ -690,14 +714,16 @@ function CryptoStamper({ provider, settings, theme }) {
 							className={main.stamp_count}
 						>
 							<p className={`${main.stamp_subtag} csbs-pr-3`}>
-								{stampingsCount} &nbsp; nfts &nbsp; here.
+								{stampingsCount} &nbsp; nfts here.
 							</p>
 						</div>
 						<div
 							onClick={handleAddStamp}
 							className={main.stamp_count}
 						>
-							<p className={`${main.stamp_subtag} `}>Add.</p>
+							<p className={`${main.stamp_subtag} `}>
+								Add yours.
+							</p>
 						</div>
 					</div>
 				</div>

@@ -24,7 +24,7 @@ import {
 	getChainObjectFromSymbol,
 	getChainObject,
 	supportedTestChains,
-	supportedMainChains
+	supportedMainChains,
 } from "~/src/lib/data";
 
 import {
@@ -137,7 +137,7 @@ function StampCard({ stamping, clickSelectStamp, listView }) {
 				)}
 			</div>
 			<div className={card.stamping_info}>
-				<div className={card.stamping_header}>
+				<div className={card.stamping_header2}>
 					<div>
 						<h3 className={card.title}>{stamping.metadata.name}</h3>
 						<div className="csbs-d-flex csbs-align-items-center">
@@ -187,15 +187,22 @@ function StampCard({ stamping, clickSelectStamp, listView }) {
 								{getChainObjectFromSymbol(stamping.chain).name}
 							</span>
 						</h4>
-						<h4 className={`${card.stamp_price} csbs-ml-2`}>
-							<span>/ {stamping.rarity}</span>
+					</div>
+				</div>
+				<div className="csbs-pt-2">
+					<div className="csbs-d-flex csbs-justify-content-start csbs-align-items-center csbs-pl-2 csbs-py-2">
+						<span
+							className={`${styles.tab_icon} ${card.icon_padded}
+							${styles.rarity_icon}`}
+						/>
+						<h4 className={card.stamp_price}>
+							{(100 / stamping.rarity).toFixed(1)?.toString()}
 							<span className={card.stamp_subtag}>Rarity</span>
 						</h4>
 					</div>
-					<div className="csbs-d-flex csbs-justify-content-start csbs-align-items-center csbs-pl-2 csbs-py-2"></div>
 				</div>
 				<a
-					className={`${card.btn} ${card.subtag}`}
+					className={`${card.btn} ${card.subtag} csbs-mt-auto`}
 					href={`https://cryptostamping.org/scan/${stamping.nft_id}`}
 					target="_blank"
 					rel="noreferrer"
@@ -216,13 +223,13 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 	const [listView, setListView] = useState("list");
 	const [sortParams, setSortParams] = useState({
 		name: "Latest",
-		params: { type: "updatedAt", order: false, id: "created-desc" },
+		params: { type: "updatedAt", order: true, id: "created-desc" },
 	});
 
 	const sortTypes = [
 		{
 			name: "Latest",
-			params: { type: "updatedAt", order: false, id: "created-desc" },
+			params: { type: "updatedAt", order: true, id: "created-desc" },
 		},
 		{
 			name: "Oldest",
@@ -230,7 +237,7 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 		},
 		{
 			name: "Rarest",
-			params: { type: "rarity", order: true, id: "rarity-asc" },
+			params: { type: "rarity", order: false, id: "rarity-asc" },
 		},
 	];
 
@@ -268,7 +275,9 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 		//dispatch(setStampSelector(true));
 	};
 
-	const clickRefresh = () => {
+	const clickRefresh = (in_sort_pararams) => {
+		if(!in_sort_pararams)
+			in_sort_pararams = sortParams;
 		setLoading(true);
 		const promA = [];
 		const Stamping = Moralis.Object.extend("Stamping");
@@ -280,9 +289,10 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 		query2.equalTo("web_id", `${url}${embedId ? "-embed-" + embedId : ""}`);
 		if (testnet) query2.containedIn("chain", supportedTestChains);
 		else query2.containedIn("chain", supportedMainChains);
-		if (sortParams?.params?.order)
-			query2.descending(sortParams?.params?.type);
-		else query2.ascending(sortParams?.params?.type);
+		if (in_sort_pararams?.params?.order)
+			query2.descending(in_sort_pararams?.params?.type);
+		else 
+			query2.ascending(in_sort_pararams?.params?.type);
 		promA.push(query2.limit(30).find());
 		promA.push(query1.count());
 		Promise.all(promA)
@@ -311,160 +321,171 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 			className={`${dataTheme}-cryptostamping-popup`}
 			nested
 		>
-		<div
-			onClick={closeWindow}
-			className={`${styles.container} ${
-				showStampLister ? styles.active : ""
-			}`}
-		>
 			<div
-				ref={boxRef}
-				className={`${styles.box} ${
+				onClick={closeWindow}
+				className={`${styles.container} ${
 					showStampLister ? styles.active : ""
-				} shadowed`}
+				}`}
 			>
-				<ListerHeader
-					loading={loading}
-					closeWindow={closeWindow}
-					setLoading={setLoading}
-					ethereumProvider={ethereumProvider}
-					Moralis={Moralis}
-					clickRefresh={clickRefresh}
-				/>
-				{currentTab === "explorer" && (
-					<div className={`${styles.scrollbox} vert_scroll`}>
-						{message?.type === "message" && (
-							<div
-								className={`${styles.message_box} vert_scroll`}
-							>
-								<h1 className={styles.message_title}>
-									{message.title}
-								</h1>
-								<p className={styles.message}>
-									{message.message}
-								</p>
-								{message.button && !message.button_link && (
-									<div className={styles.message_btn}>
-										{message.button}
-									</div>
-								)}
-								{message.button && message.button_link && (
-									<a
-										href={message.button_link}
-										target="_blank"
-										rel="noreferrer"
-										className={`${styles.message_btn} ${styles.blue}`}
-									>
-										{message.button}
-									</a>
-								)}
-							</div>
-						)}
-						{!message && (
-							<div
-								className={`${card.stamping_list} vert_scroll`}
-							>
-								<div className="csbs-d-flex csbs-w-100 csbs-justify-content-between csbs-align-items-center">
-									<div className={styles.tab_icons}>
-										<div
-											onClick={() => {
-												setListView("list");
-											}}
-											className={`${styles.tab_btn} ${
-												styles.start
-											} 
-									${listView === "list" && styles.active}`}
-										>
-											<span
-												className={`${styles.tab_mini_icon} ${styles.list}`}
-											/>
+				<div
+					ref={boxRef}
+					className={`${styles.box} ${
+						showStampLister ? styles.active : ""
+					} shadowed`}
+				>
+					<ListerHeader
+						loading={loading}
+						closeWindow={closeWindow}
+						setLoading={setLoading}
+						ethereumProvider={ethereumProvider}
+						Moralis={Moralis}
+						clickRefresh={clickRefresh}
+					/>
+					{currentTab === "explorer" && (
+						<div className={`${styles.scrollbox} vert_scroll`}>
+							{message?.type === "message" && (
+								<div
+									className={`${styles.message_box} vert_scroll`}
+								>
+									<h1 className={styles.message_title}>
+										{message.title}
+									</h1>
+									<p className={styles.message}>
+										{message.message}
+									</p>
+									{message.button && !message.button_link && (
+										<div className={styles.message_btn}>
+											{message.button}
 										</div>
-										<div
-											onClick={() => {
-												setListView("grid");
-											}}
-											className={`${styles.tab_btn} ${
-												styles.end
-											} 
-									${listView === "grid" && styles.active}`}
+									)}
+									{message.button && message.button_link && (
+										<a
+											href={message.button_link}
+											target="_blank"
+											rel="noreferrer"
+											className={`${styles.message_btn} ${styles.blue}`}
 										>
-											<span
-												className={`${styles.tab_mini_icon} ${styles.grid}`}
-											/>
-										</div>
-									</div>
-									<div className="csbs-d-flex csbs-flex-column csbs-w-100 csbs-align-items-center csbs-mb-4">
-										<h1 className={styles.bold_title2}>{stampingsCount}</h1>
-										<p className={styles.bold_subtitle}>
-											STAMPS
-										</p>
-									</div>
-									<div className={styles.tab_icons}>
-										<Tooltip
-											delay={0}
-											on={["click"]}
-											position={"bottom right"}
-											theme={dataTheme}
-											trigger={
-												<div
-													className={`${styles.tab_btn} ${styles.fill} ${styles.active}`}
-												>
-													{sortParams?.name}
-													<span
-														className={`${styles.tab_mini_icon} ${styles.down}`}
-													/>
-												</div>
-											}
-											closeOnClick={true}
-										>
-											<div className={styles.sort_list}>
-												{sortTypes.map((sortType) => {
-													return (
-														<div
-															key={sortType.name}
-															onClick={() => {
-																setSortParams(
-																	sortType
-																);
-																clickRefresh();
-															}}
-															className={`${
-																styles.tab_btn
-															} ${
-																styles.vertical
-															} ${
-																sortType.params
-																	.id ===
-																	sortParams
-																		?.params
-																		?.id &&
-																styles.active
-															}`}
-														>
-															{sortType.name}
-														</div>
-													);
-												})}
-											</div>
-										</Tooltip>
-									</div>
+											{message.button}
+										</a>
+									)}
 								</div>
-								{stampings.map((stamping) => {
-									return (
-										<StampCard
-											key={stamping.nft_id}
-											listView={listView}
-											clickSelectStamp={clickSelectStamp}
-											stamping={stamping}
-										/>
-									);
-								})}
-							</div>
-						)}
-					</div>
-				)}
+							)}
+							{!message && (
+								<div
+									className={`${card.stamping_list} vert_scroll`}
+								>
+									<div className="csbs-d-flex csbs-w-100 csbs-justify-content-between csbs-align-items-center">
+										<div className={styles.tab_icons}>
+											<div
+												onClick={() => {
+													setListView("list");
+												}}
+												className={`${styles.tab_btn} ${
+													styles.start
+												} 
+									${listView === "list" && styles.active}`}
+											>
+												<span
+													className={`${styles.tab_mini_icon} ${styles.list}`}
+												/>
+											</div>
+											<div
+												onClick={() => {
+													setListView("grid");
+												}}
+												className={`${styles.tab_btn} ${
+													styles.end
+												} 
+									${listView === "grid" && styles.active}`}
+											>
+												<span
+													className={`${styles.tab_mini_icon} ${styles.grid}`}
+												/>
+											</div>
+										</div>
+										<div className="csbs-d-flex csbs-flex-column csbs-w-100 csbs-align-items-center csbs-mb-4">
+											<h1 className={styles.bold_title2}>
+												{stampingsCount}
+											</h1>
+											<p className={styles.bold_subtitle}>
+												STAMPS
+											</p>
+										</div>
+										<div className={styles.tab_icons}>
+											<Tooltip
+												delay={0}
+												on={["click"]}
+												position={"bottom right"}
+												theme={dataTheme}
+												trigger={
+													<div
+														className={`${styles.tab_btn} ${styles.fill} ${styles.active}`}
+													>
+														{sortParams?.name}
+														<span
+															className={`${styles.tab_mini_icon} ${styles.down}`}
+														/>
+													</div>
+												}
+												closeOnClick={true}
+											>
+												<div
+													className={styles.sort_list}
+												>
+													{sortTypes.map(
+														(sortType) => {
+															return (
+																<div
+																	key={
+																		sortType.name
+																	}
+																	onClick={() => {
+																		setSortParams(sortType);
+																		clickRefresh(sortType);
+																	}}
+																	className={`${
+																		styles.tab_btn
+																	} ${
+																		styles.vertical
+																	} ${
+																		sortType
+																			.params
+																			.id ===
+																			sortParams
+																				?.params
+																				?.id &&
+																		styles.active
+																	}`}
+																>
+																	{
+																		sortType.name
+																	}
+																</div>
+															);
+														}
+													)}
+												</div>
+											</Tooltip>
+										</div>
+									</div>
+									{stampings.map((stamping) => {
+										return (
+											<StampCard
+												key={stamping.nft_id}
+												listView={listView}
+												clickSelectStamp={
+													clickSelectStamp
+												}
+												stamping={stamping}
+											/>
+										);
+									})}
+								</div>
+							)}
+						</div>
+					)}
+				</div>
 			</div>
-		</div>
 		</Popup>
 	);
 }

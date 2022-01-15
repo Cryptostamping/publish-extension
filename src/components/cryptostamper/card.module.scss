@@ -197,7 +197,7 @@
 }
 
 .icon_padded_r{
-	margin-right: 4px;
+	margin-right: 8px;
 	width: 1.25em;
 	height: 1.25em;
 	background-size: contain !important;
@@ -227,10 +227,6 @@
 	color: var(--black-8);
 }
 
-.title3{
-	font-family: "Raleway", sans-serif;
-}
-
 .title2,
 .title3{
 	font-size: 14px;
@@ -242,6 +238,11 @@
 	white-space: pre-line;
 	-webkit-line-clamp: 1;
 	-webkit-box-orient: vertical;
+}
+
+.title3{
+	font-family: "Raleway", sans-serif;
+	font-size: 16px;
 }
 
 .title4{
@@ -303,6 +304,18 @@
 	border-radius: 4px;
 	cursor: pointer;
 	background: var(--white-10);
+	text-decoration: none !important;
+	color: var(--black);
+}
+
+.address .bold{
+	font-size: 12px;
+	font-weight: 900;
+	letter-spacing: 0;
+}
+
+.address .mini{
+	letter-spacing: 0.1em;
 }
 
 .address:hover,
@@ -311,7 +324,6 @@
 }
 
 .description {
-	border-top: 1px solid var(--white-7);
 	padding-top: 10px;
 	color: var(--black-9);
 	font-size: 13px;
@@ -328,6 +340,9 @@
 
 .description.big{
 	min-height: 5em;
+	padding-top: 0;
+	color: var(--black-8);
+	margin: 0 0 10px 0 !important;
 }
 
 .description.light{
@@ -338,7 +353,7 @@
 	min-height: 100%;
 	display: flex;
 	flex-direction: column;
-	justify-content: space-between;
+	justify-content: flex-start;
 	border-left: 1px solid var(--white-8);
 }
 
@@ -397,6 +412,82 @@
 	padding: 15px 0 20px 0;
 	margin-bottom: 10px;
 	border-bottom: 1px solid var(--white-8);
+}
+
+/* STAMPING POPUP */
+
+.stamping_header{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 15px 15px 0px 15px;
+	//border-bottom: 1px solid var(--white-8);
+}
+
+.stamping_midbar{
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: flex-stretch;
+	padding: 15px 15px;
+	border-bottom: 1px solid var(--white-8);
+}
+
+.stamping_footer{
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	padding: 10px 15px;
+	border-top: 1px solid var(--white-9);
+}
+
+.icons_list{
+	display: flex;
+	align-items: center;
+}
+
+.icon_link{
+	display: block;
+	margin: 0 5px;
+	font-size: 12px;
+}
+
+.icon_link .icon{
+	display: block;
+	background-size: cover;
+	background-position: center;
+	min-width: 1.5em;
+	min-height: 1.5em;
+}
+
+.icon_opensea{
+	filter: var(--f-grey);
+	background: url($asset-url+"/icons/ext_opensea.svg");
+}
+
+.icon_ethscan{
+	filter: var(--f-grey);
+	background: url($asset-url+"/icons/article.svg");
+}
+
+.icon_cryptostamping{
+	filter: var(--f-grey);
+	background: url($asset-url+"/icons/open_in_new.svg");
+}
+
+.icon_opensea:hover,
+.icon_opensea:focus{
+	filter: $f-skyblue;
+}
+
+.icon_ethscan:hover,
+.icon_ethscan:focus{
+	filter: $f-darkblue;
+}
+
+.icon_cryptostamping:hover,
+.icon_cryptostamping:focus{
+	filter: unset;
 }
 
 
