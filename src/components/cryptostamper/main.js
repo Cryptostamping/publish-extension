@@ -162,7 +162,7 @@ const renderMiniStamp = memo(({ index, style, data }) => {
 							</span>
 							{stamping.comment || `No Comment Added...`}
 						</p>
-						<div className={`csbs-d-flex`}>
+						<div className={`csbs-d-flex csbs-align-items-center`}>
 							<span className={card.subtag}>
 								{"Owned by "}
 								&nbsp;-&nbsp;
@@ -455,7 +455,6 @@ function CryptoStamper({ provider, settings, theme }) {
 			}
 			createSigningData(Moralis, APP_SIGNING_MSG)
 				.then((sign_message) => {
-					console.log(sign_message);
 					return window.cryptostamping.ethereum.connectWallet(
 						sign_message
 					);

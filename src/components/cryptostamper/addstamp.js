@@ -102,11 +102,11 @@ function AddStamp({
 				contract.methods.getRarity(currentStamp.token_id).call()
 			);
 			*/
-			console.log(currentStamp.objectId);
+			// console.log(currentStamp.objectId);
 			Promise.all(promA)
 				.then((responses) => {
 					const stamp_results = responses[0];
-					console.log(stamp_results);
+					// console.log(stamp_results);
 					if (stamp_results.length > 0) {
 						setStamp(stamp_results[0]);
 						if (
@@ -150,6 +150,7 @@ function AddStamp({
 				promA.push(
 					stamping_new.save({
 						signature_data: response.signature_data,
+						signature: response.signature,
 						user_address: response.from,
 						token_name: currentStamp.name,
 						token_address: currentStamp.token_address,

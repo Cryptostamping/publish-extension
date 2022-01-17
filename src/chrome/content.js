@@ -3,7 +3,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import Plugin from "~/src/plugin";
-import { CryptostampingProvider } from "~/src/lib/plugin";
+import { CryptostampingProvider, EXT_LOGOS, EXT_LAYS } from "~/src/lib/plugin";
 import "~/src/plugin.css";
 import "~/src/styles/globals.scss";
 import "~/src/styles/ui_lib/bootstrap-grid.css";
@@ -48,6 +48,11 @@ class cryptostamping extends CryptostampingProvider {
             document.body.children[i].style.position = "initial";
             break;
         }
+        chrome.runtime.sendMessage({
+            type: "ui",
+            key: "close_embed",
+            from: "content",
+        });
     };
 
     isConnected = () => {
@@ -114,7 +119,11 @@ class cryptostamping extends CryptostampingProvider {
         providerAddress: () => {
             return new Promise((resolve, reject) => {
                 chrome.runtime.sendMessage(
-                    { type: "ethereum", key: "provider_address", from: "content" },
+                    {
+                        type: "ethereum",
+                        key: "provider_address",
+                        from: "content",
+                    },
                     (res) => {
                         if (res.error) reject(res.error);
                         else resolve(res.address);
@@ -191,7 +200,7 @@ const messagesFromReactAppListener = (message, sender, response) => {
 
         ReactDOM.render(<Plugin view={"plugin"} theme={"light"} />, app);
 
-        response("loaded");
+        response({ loaded: true });
         return true;
     }
 };

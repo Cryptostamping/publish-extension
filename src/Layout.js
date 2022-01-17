@@ -10,7 +10,7 @@ import {
   FRONTEND_BASE_URL,
 } from "~/src/lib/data";
 import { printAddress } from "~/src/lib/utils";
-import { sendChromeMessage } from "~/src/lib/plugin";
+import { sendChromeMessage, EXT_LOGOS, EXT_LAYS } from "~/src/lib/plugin";
 
 import selector from "~/src/components/cryptostamper/selector.module.scss";
 import styles from "~/src/styles/pages/layout.module.scss";
@@ -64,11 +64,9 @@ function Layout({ domElement }) {
         );
       })
       .then((res) => {
+        chrome.browserAction.setIcon(EXT_LOGOS.ADD);
+        chrome.browserAction.setPopup(EXT_LAYS.NOPOP);
         window.close();
-        chrome.browserAction.setIcon({ path: "logo48_add.png" });
-        chrome.browserAction.setPopup({
-          popup: "",
-        });
       })
       .catch((err) => {
         console.log(err);

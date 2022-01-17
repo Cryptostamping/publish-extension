@@ -60,7 +60,7 @@ export const useSigning = (provider_in) => {
             if (recovered === from_address) {
               resolve({
                 from: from_address,
-                signature: JSON.stringify(result.result),
+                signature: result.result,
                 signature_data: JSON.stringify(msgParams),
               });
             } else {
@@ -160,6 +160,10 @@ export const useConnect = (provider_in) => {
   const _isMounted = useRef(true);
 
   useEffect(() => {
+    console.log(address);
+  }, [address]);
+
+  useEffect(() => {
     _isMounted.current = true;
 
     const handleAccountsChanged = (accounts) => {
@@ -170,7 +174,11 @@ export const useConnect = (provider_in) => {
         return;
       }
       setAccounts(accounts);
-      setAddress(provider?.selectedAddress);
+      setAddress(
+        provider?.type === "cryptostamping"
+          ? accounts[0]
+          : provider?.selectedAddress
+      );
       setConnected(true);
     };
 

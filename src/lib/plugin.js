@@ -169,6 +169,69 @@ export const createSignMessage = (web3, msg, _address) => {
   });
 };
 
+export const EXT_LOGOS = {
+  SIGN: { path: "logos/logo48_sign.png" },
+  ADD: { path: "logos/logo48_add.png" },
+  PLAIN: { path: "logos/logo48.png" },
+  CONNECT: { path: "logos/logo48_connect.png" },
+  DISABLED: { path: "logos/logo48_disabled.png" },
+};
+
+export const EXT_LAYS = {
+  NOPOP: { popup: "" },
+  CONNECT: { popup: "index.html" },
+  ADD: { path: "logos/logo48_add.png" },
+  PLAIN: { path: "logos/logo48_add.png" },
+};
+
+export const setExtIcon = (icon_logo,tab_id) => {
+  if(tab_id){
+    chrome.browserAction.setIcon({
+          tabId: tab_id,
+          ...icon_logo,
+        });
+    return;
+  }
+  chrome.tabs &&
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      var activeTab = tabs[0];
+      if (activeTab)
+        chrome.browserAction.setIcon({
+          tabId: activeTab.id,
+          ...icon_logo,
+        });
+    });
+};
+
+export const setExtIconPromise = (icon_logo) => {
+  return new Promise((resolve, reject) => {
+    chrome.tabs &&
+      chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        var activeTab = tabs[0];
+        if (activeTab){
+          chrome.browserAction.setIcon({
+            tabId: activeTab.id,
+            ...icon_logo,
+          });
+          resolve(activeTab.id);
+        }
+        reject(new Error("No active Tab"));
+      });
+  });
+};
+
+export const setExtPopup = (icon_popup) => {
+  chrome.tabs &&
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+      var activeTab = tabs[0];
+      if (activeTab)
+        chrome.browserAction.setPopup({
+          tabId: activeTab.id,
+          ...icon_popup,
+        });
+    });
+};
+
 export class CryptostampingProvider {
   constructor() {
     this._events = {};

@@ -3,10 +3,10 @@
   "name": "Cryptostamping",
   "description": "Let your NFTs add value to the internet.",
   "icons": {
-    "16": "logo16.png",
-    "32": "logo32.png",
-    "48": "logo48.png",
-    "128": "logo128.png"
+    "16": "logos/logo16.png",
+    "32": "logos/logo32.png",
+    "48": "logos/logo48.png",
+    "128": "logos/logo128.png"
   },
   "version": "1.0.2",
   "manifest_version": 2,
@@ -36,6 +36,7 @@
     "/static/css/*",
     "/static/js/*",
     "/icons/*",
+    "/logos/*",
     "/fonts/*",
     "/logo_favicon.svg"
   ]

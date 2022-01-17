@@ -12,26 +12,26 @@ import {
   createSignMessage,
   moralisQueryConstructor,
   getFromStorage,
+  EXT_LOGOS,
+  EXT_LAYS,
+  setExtIcon,
+  setExtIconPromise,
+  setExtPopup,
 } from "~/src/lib/plugin";
 
 //Moralis.start({ serverUrl:MOLARIS_SERVER_URL, appId: MOLARIS_APP_ID });
 
-const setupPopup = (provider_in) => {
+const initialisePopup = (provider_in) => {
+  chrome.browserAction.setIcon(EXT_LOGOS.PLAIN);
   if (!provider_in.selectedAddress) {
-    chrome.browserAction.setIcon({ path: "logo48.png" });
-    chrome.browserAction.setPopup({
-      popup: "index.html",
-    });
+    chrome.browserAction.setPopup(EXT_LAYS.CONNECT);
   } else {
-    chrome.browserAction.setIcon({ path: "logo48_add.png" });
-    chrome.browserAction.setPopup({
-      popup: "",
-    });
+    chrome.browserAction.setPopup(EXT_LAYS.NOPOP);
   }
   //chrome.storage.sync.get(["address"], ({ address }) => {});
 };
 
-const setupEmmitter = (emit_data) => {
+const setupEmmitter = (emit_name, emit_data) => {
   chrome.tabs &&
     chrome.tabs.query(
       {
@@ -43,7 +43,7 @@ const setupEmmitter = (emit_data) => {
         if (currentTabId)
           chrome.tabs.sendMessage(currentTabId, {
             type: "provider_events",
-            name: "disconnect",
+            name: emit_name,
             data: { emit_data },
           });
       }
@@ -55,21 +55,42 @@ const setupProvider = () => {
   const web3 = new Web3(provider);
   chrome.storage.sync.set({ provider: "metamask" });
 
-  const accountsChangedListener = (accounts) => {
+  const handleAccountsChanged = (accounts) => {
     if (!accounts.length) {
+      console.log("no accounts");
       chrome.storage.sync.set({ address: null });
-      setupPopup(provider);
+      initialisePopup(provider);
       return;
     }
-    chrome.storage.sync.set({ address: accounts[0] });
-    setupEmmitter(accounts);
-    setupPopup(provider);
+    chrome.storage.sync.set({
+      address: provider?.selectedAddress || accounts[0],
+    });
+    initialisePopup(provider);
+  };
+
+  const accountsChangedListener = (accounts) => {
+    handleAccountsChanged(accounts);
+    setupEmmitter("accountsChanged", accounts);
   };
 
   const disconnectListener = (accounts) => {
     chrome.storage.sync.set({ address: null });
-    setupEmmitter(accounts);
-    setupPopup(provider);
+    setupEmmitter("disconnect", accounts);
+    initialisePopup(provider);
+    console.log("disconnect listener");
+  };
+
+  const connectListener = (connectInfo) => {
+    setupEmmitter("connect", connectInfo);
+    provider
+      .request({
+        method: "eth_accounts",
+        params: [],
+      })
+      .then((accounts) => {
+        handleAccountsChanged(accounts);
+      });
+    console.log("connect listener");
   };
 
   const errorListener = (error) => {
@@ -78,6 +99,7 @@ const setupProvider = () => {
       provider.removeListener("error", errorListener);
       provider.removeListener("accountsChanged", accountsChangedListener);
       provider.removeListener("disconnect", disconnectListener);
+      provider.removeListener("connect", connectListener);
       chrome.runtime.onMessage.removeListener(messagesFromContentListener);
       chrome.tabs.onUpdated.removeListener(tabsUpdateListener);
       setTimeout(() => {
@@ -98,7 +120,7 @@ const setupProvider = () => {
           .then((accounts) => {
             const _address = accounts[0];
             chrome.storage.sync.set({ address: _address });
-            setupPopup(provider);
+            initialisePopup(provider);
             response({ address: _address });
           })
           .catch((err) => {
@@ -114,21 +136,30 @@ const setupProvider = () => {
           })
           .then((accounts) => {
             if (accounts?.length <= 0) throw new Error("No Accounts connected");
-            return Promise.all([getFromStorage("sign_data"), accounts]);
+            return Promise.all([
+              getFromStorage("sign_data"),
+              accounts,
+              getFromStorage("sign_handling"),
+            ]);
           })
           .then((response) => {
             const sign_data = response[0];
             const accounts = response[1];
             const current_address = accounts[0];
+            const sign_handling = response[2];
             //if (sign_data?.from === current_address) {
             //  return sign_data;
             //}
+            if (sign_handling) {
+              throw new Error("Handling Signature request");
+            }
+            //setExtIcon(EXT_LOGOS.SIGN);
             var msg = `0x${Buffer.from(message.sign_message, "utf8").toString(
               "hex"
             )}`;
-            const _address = accounts[0];
-            chrome.storage.sync.set({ address: _address });
-            return createSignMessage(web3, msg, _address);
+            chrome.storage.sync.set({ address: current_address });
+            chrome.storage.sync.set({ sign_handling: true });
+            return createSignMessage(web3, msg, current_address);
           })
           .then((result) => {
             response({
@@ -136,28 +167,51 @@ const setupProvider = () => {
               from: result.from,
               data: message.sign_message,
             });
+            chrome.storage.sync.set({ sign_handling: false });
             chrome.storage.sync.set({ sign_data: result });
+            //setExtIcon(EXT_LOGOS.ADD);
           })
           .catch((err) => {
             console.log(err);
             response({ error: err });
+            chrome.storage.sync.set({ sign_handling: false });
+            //setExtIcon(EXT_LOGOS.ADD);
           });
         return true;
       }
 
       if (message.key === "sign_message") {
-        getFromStorage("address")
-          .then((_address) => {
-            return createSignMessage(web3, message.message, _address);
+        Promise.all([
+          setExtIconPromise(EXT_LOGOS.SIGN),
+          getFromStorage("address"),
+        ])
+          .then((responses) => {
+            const tabId = responses[0];
+            const _address = responses[1];
+            if (provider && _address !== provider?.selectedAddress) {
+              throw new Error("Address Mismatch");
+            }
+            chrome.storage.sync.set({ sign_handling: tabId });
+            return Promise.all([
+              tabId,
+              createSignMessage(web3, message.message, _address),
+            ]);
           })
-          .then((result) => {
+          .then((results) => {
+            const tabId = results[0];
+            setExtIcon(EXT_LOGOS.ADD, tabId);
+            chrome.storage.sync.set({ sign_handling: false });
             response({
-              signature: result.signature,
-              signature_data: result.signature_data,
-              from: result.address,
+              signature: results[1].signature,
+              signature_data: results[1].signature_data,
+              from: results[1].from,
             });
           })
           .catch((err) => {
+            getFromStorage("sign_handling").then((tabId) => {
+              if (tabId) setExtIcon(EXT_LOGOS.ADD, tabId);
+              chrome.storage.sync.set({ sign_handling: false });
+            });
             response({ error: err });
           });
         return true;
@@ -166,7 +220,9 @@ const setupProvider = () => {
       if (message.key === "get_accounts") {
         provider
           .request({
-            method:  message.requestPermission ? "eth_requestAccounts" : "eth_accounts",
+            method: message.requestPermission
+              ? "eth_requestAccounts"
+              : "eth_accounts",
             params: [],
           })
           .then((accounts) => {
@@ -190,7 +246,13 @@ const setupProvider = () => {
         return true;
       }
     }
-
+    if (message.type === "ui") {
+      if (message.key === "close_embed") {
+        setExtIcon(EXT_LOGOS.PLAIN);
+        setExtPopup(EXT_LAYS.NOPOP);
+        return false;
+      }
+    }
     /*if (message.type === "moralis") {
       if (message.key === "query") {
         const query = moralisQueryConstructor(Moralis, message.queryParams);
@@ -215,20 +277,35 @@ const setupProvider = () => {
   };
 
   const tabsUpdateListener = (tabId, changeInfo, tab) => {
+    if (tab.url.indexOf("chrome-extension://") > -1) {
+      return;
+    }
     if (changeInfo.status === "loading") {
+      chrome.browserAction.setIcon({
+        tabId: tabId,
+        ...EXT_LOGOS.DISABLED,
+      });
+      return;
     }
     if (changeInfo.status === "complete") {
-      if (!provider.selectedAddress || tab.url === "chrome://newtab/") {
-        chrome.browserAction.setIcon({ path: "logo48.png" });
+      console.log(tabId, changeInfo, tab);
+      if (!provider.selectedAddress || tab.url.indexOf("chrome://") > -1) {
+        chrome.browserAction.setIcon({
+          tabId: tabId,
+          ...EXT_LOGOS.PLAIN,
+        });
         chrome.browserAction.setPopup({
           tabId: tabId,
-          popup: "index.html",
+          ...EXT_LAYS.CONNECT,
         });
       } else {
-        chrome.browserAction.setIcon({ path: "logo48_add.png" });
+        chrome.browserAction.setIcon({
+          tabId: tabId,
+          ...EXT_LOGOS.PLAIN,
+        });
         chrome.browserAction.setPopup({
           tabId: tabId,
-          popup: "",
+          ...EXT_LAYS.NOPOP,
         });
       }
     }
@@ -238,10 +315,11 @@ const setupProvider = () => {
     provider.on("error", errorListener);
     provider.on("accountsChanged", accountsChangedListener);
     provider.on("disconnect", disconnectListener);
+    provider.on("connect", connectListener);
     chrome.runtime.onMessage.addListener(messagesFromContentListener);
     chrome.tabs.onUpdated.addListener(tabsUpdateListener);
     chrome.runtime.onStartup.addListener(() => {
-      setupPopup(provider);
+      initialisePopup(provider);
     });
   }
 };
@@ -262,10 +340,27 @@ chrome.browserAction.onClicked.addListener(function (tab) {
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       var activeTab = tabs[0];
       if (activeTab)
-        chrome.tabs.sendMessage(activeTab?.id, {
-          from: "background",
-          message: "embed_stamper",
-        });
+        chrome.tabs.sendMessage(
+          activeTab?.id,
+          {
+            from: "background",
+            message: "embed_stamper",
+            tabId: activeTab?.id,
+          },
+          (res) => {
+            if (res.error) return;
+            if (res.loaded) {
+              chrome.browserAction.setIcon({
+                tabId: activeTab?.id,
+                ...EXT_LOGOS.ADD,
+              });
+              chrome.browserAction.setPopup({
+                tabId: activeTab?.id,
+                ...EXT_LAYS.CONNECT,
+              });
+            }
+          }
+        );
     });
 });
 
