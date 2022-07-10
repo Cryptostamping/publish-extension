@@ -781,11 +781,13 @@ html {
 .csbs-d-flex {
   display: -ms-flexbox !important;
   display: flex !important;
+  flex-direction: row;
 }
 
 .csbs-d-inline-flex {
   display: -ms-inline-flexbox !important;
   display: inline-flex !important;
+  flex-direction: row;
 }
 
 @media (min-width: 576px) {

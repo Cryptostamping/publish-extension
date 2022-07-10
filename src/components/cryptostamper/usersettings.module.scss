@@ -9,12 +9,14 @@
 
 .top_bar{
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	padding: 20px 20px;
 }
 
 .bottom_bar{
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	padding: 20px 20px;
 }
@@ -85,6 +87,7 @@
 
 .input_btn {
 	display: flex;
+	flex-direction: row;
 	position: relative;
 	align-items: center;
 	background: transparent;
@@ -149,6 +152,7 @@
 
 .option{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	padding: 4px 10px !important;
@@ -202,6 +206,7 @@
 
 .btn{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	padding: 10px 20px;

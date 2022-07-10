@@ -9,6 +9,7 @@
 
 .top_bar{
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	padding: 20px 20px;
 }
@@ -23,6 +24,7 @@
 
 .stamp_box{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	margin: 20px 40px;
@@ -83,6 +85,7 @@
 
 .input_btn {
 	display: flex;
+	flex-direction: row;
 	position: relative;
 	align-items: center;
 	background: transparent;
@@ -143,6 +146,7 @@
 
 .option{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	padding: 4px 10px;
@@ -196,6 +200,7 @@
 
 .btn{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	padding: 10px 20px;
@@ -225,6 +230,7 @@
 .link{
 	color: var(--black);
 	display: flex;
+	flex-direction: row;
 }
 
 .link:hover,

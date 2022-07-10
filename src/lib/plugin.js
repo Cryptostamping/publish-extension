@@ -75,11 +75,15 @@ export async function MoralisLogin(Moralis, response) {
 export const moralisQueryConstructor = (Moralis, queryParams) => {
   const moralisClass = Moralis.Object.extend(queryParams.className);
   const query = new Moralis.Query(moralisClass);
-  for (const containedIn of queryParams.containedIn) {
-    query.containedIn(containedIn.name, containedIn.value);
+  if (queryParams.containedIn) {
+    for (const containedIn of queryParams.containedIn) {
+      query.containedIn(containedIn.name, containedIn.value);
+    }
   }
-  for (const equalTo of queryParams.equalTo) {
-    query.equalTo(equalTo.name, equalTo.value);
+  if (queryParams.equalTo) {
+    for (const equalTo of queryParams.equalTo) {
+      query.equalTo(equalTo.name, equalTo.value);
+    }
   }
   if (queryParams.sort) {
     query[queryParams.sort.order](queryParams.sort.name);
@@ -184,12 +188,14 @@ export const EXT_LAYS = {
   PLAIN: { path: "logos/logo48_add.png" },
 };
 
-export const setExtIcon = (icon_logo,tab_id) => {
-  if(tab_id){
+export const setExtIcon = (icon_logo, tab_id) => {
+  if (tab_id) {
     chrome.browserAction.setIcon({
-          tabId: tab_id,
-          ...icon_logo,
-        });
+      tabId: tab_id,
+      ...icon_logo,
+    });
+    if (icon_logo !== EXT_LOGOS.PLAIN)
+      chrome.browserAction.setBadgeText({ tabId: tab_id, text: "" });
     return;
   }
   chrome.tabs &&
@@ -200,6 +206,8 @@ export const setExtIcon = (icon_logo,tab_id) => {
           tabId: activeTab.id,
           ...icon_logo,
         });
+      if (icon_logo !== EXT_LOGOS.PLAIN && activeTab)
+        chrome.browserAction.setBadgeText({ tabId: activeTab.id, text: "" });
     });
 };
 
@@ -208,11 +216,16 @@ export const setExtIconPromise = (icon_logo) => {
     chrome.tabs &&
       chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
         var activeTab = tabs[0];
-        if (activeTab){
+        if (activeTab) {
           chrome.browserAction.setIcon({
             tabId: activeTab.id,
             ...icon_logo,
           });
+          if (icon_logo !== EXT_LOGOS.PLAIN && activeTab)
+            chrome.browserAction.setBadgeText({
+              tabId: activeTab.id,
+              text: "",
+            });
           resolve(activeTab.id);
         }
         reject(new Error("No active Tab"));
@@ -220,7 +233,14 @@ export const setExtIconPromise = (icon_logo) => {
   });
 };
 
-export const setExtPopup = (icon_popup) => {
+export const setExtPopup = (icon_popup, tab_id) => {
+  if (tab_id) {
+    chrome.browserAction.setPopup({
+      tabId: tab_id,
+      ...icon_popup,
+    });
+    return;
+  }
   chrome.tabs &&
     chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
       var activeTab = tabs[0];
@@ -230,6 +250,19 @@ export const setExtPopup = (icon_popup) => {
           ...icon_popup,
         });
     });
+};
+
+export const getBadgeDetails = (count, testnet) => {
+  let badge_text;
+  let badge_color;
+  if (count <= 999) {
+    badge_text = "+" + count;
+    badge_color = testnet ? "#ff5722" : "#42a5f5";
+    return { badge_text, badge_color };
+  }
+  badge_text = "+1k";
+  badge_color = testnet ? "#ff5722" : "#651fff";
+  return { badge_text, badge_color };
 };
 
 export class CryptostampingProvider {

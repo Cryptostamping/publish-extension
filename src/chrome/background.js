@@ -2,6 +2,7 @@
 import createMetaMaskProvider from "metamask-extension-provider";
 //import Moralis from 'moralis/dist/moralis.js';
 import Web3 from "web3";
+import Moralis from "moralis/dist/moralis.min.js";
 
 import {
   APP_SIGNING_MSG,
@@ -10,6 +11,7 @@ import {
 } from "~/src/lib/data";
 import {
   createSignMessage,
+  generateMoralisQuery,
   moralisQueryConstructor,
   getFromStorage,
   EXT_LOGOS,
@@ -17,6 +19,7 @@ import {
   setExtIcon,
   setExtIconPromise,
   setExtPopup,
+  getBadgeDetails
 } from "~/src/lib/plugin";
 
 //Moralis.start({ serverUrl:MOLARIS_SERVER_URL, appId: MOLARIS_APP_ID });
@@ -53,6 +56,7 @@ const setupEmmitter = (emit_name, emit_data) => {
 const setupProvider = () => {
   let provider = createMetaMaskProvider();
   const web3 = new Web3(provider);
+  Moralis.start({ serverUrl: MOLARIS_SERVER_URL, appId: MOLARIS_APP_ID });
   chrome.storage.sync.set({ provider: "metamask" });
 
   const handleAccountsChanged = (accounts) => {
@@ -276,37 +280,53 @@ const setupProvider = () => {
     }*/
   };
 
+  const syncMoralisChecker = (tab_id, tab) => {
+    const testnet = tab.url?.indexOf("testnet=true") > -1;
+    const url = testnet ? tab.url.substring(0,tab.url.indexOf("?")) : tab.url;
+    const embedId = null;
+    const userStampingQueryCount = generateMoralisQuery("stampingQuery", {
+      testnet,
+      url,
+      embedId,
+      exec: "count",
+    });
+    moralisQueryConstructor(Moralis, userStampingQueryCount)
+      .then((response) => {
+        console.log("count", response);
+        if (response > 0) {
+          const {badge_text, badge_color} = getBadgeDetails(response,testnet);
+          chrome.browserAction.setBadgeBackgroundColor({tabId: tab_id, color: badge_color});
+          chrome.browserAction.setBadgeText({tabId: tab_id, text: badge_text});
+        } else {
+          chrome.browserAction.setBadgeText({tabId: tab_id, text: ""});
+        }
+      })
+      .catch((err) => {
+        //console.log(err);
+        chrome.browserAction.setBadgeText({tabId: tab_id, text: ""});
+      });
+  };
+
   const tabsUpdateListener = (tabId, changeInfo, tab) => {
     if (tab.url.indexOf("chrome-extension://") > -1) {
       return;
     }
     if (changeInfo.status === "loading") {
-      chrome.browserAction.setIcon({
-        tabId: tabId,
-        ...EXT_LOGOS.DISABLED,
-      });
+      setExtIcon(EXT_LOGOS.DISABLED, tabId);
+      syncMoralisChecker(tabId, tab);
       return;
     }
     if (changeInfo.status === "complete") {
-      console.log(tabId, changeInfo, tab);
+      chrome.tabs.sendMessage(tabId, {
+        from: "background",
+        message: "inject_stamping",
+        tabId: tabId,
+      });
+      setExtIcon(EXT_LOGOS.PLAIN, tabId);
       if (!provider.selectedAddress || tab.url.indexOf("chrome://") > -1) {
-        chrome.browserAction.setIcon({
-          tabId: tabId,
-          ...EXT_LOGOS.PLAIN,
-        });
-        chrome.browserAction.setPopup({
-          tabId: tabId,
-          ...EXT_LAYS.CONNECT,
-        });
+        setExtPopup(EXT_LAYS.CONNECT, tabId);
       } else {
-        chrome.browserAction.setIcon({
-          tabId: tabId,
-          ...EXT_LOGOS.PLAIN,
-        });
-        chrome.browserAction.setPopup({
-          tabId: tabId,
-          ...EXT_LAYS.NOPOP,
-        });
+        setExtPopup(EXT_LAYS.NOPOP, tabId);
       }
     }
   };
@@ -350,14 +370,8 @@ chrome.browserAction.onClicked.addListener(function (tab) {
           (res) => {
             if (res.error) return;
             if (res.loaded) {
-              chrome.browserAction.setIcon({
-                tabId: activeTab?.id,
-                ...EXT_LOGOS.ADD,
-              });
-              chrome.browserAction.setPopup({
-                tabId: activeTab?.id,
-                ...EXT_LAYS.CONNECT,
-              });
+              setExtIcon(EXT_LOGOS.ADD,activeTab?.id);
+              setExtPopup(EXT_LAYS.CONNECT, activeTab?.id);
             }
           }
         );

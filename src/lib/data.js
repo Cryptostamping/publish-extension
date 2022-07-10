@@ -65,7 +65,7 @@ export const availableTestChains = [
 		symbol: "mumbai",
 		logo: "polygon",
 		name: "Mumbai",
-		chainId: 137,
+		chainId: 80001,
 		rpc: "https://rpc-mumbai.maticvigil.com",
 	},
 	{

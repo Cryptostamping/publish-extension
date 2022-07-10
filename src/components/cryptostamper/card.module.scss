@@ -2,6 +2,7 @@
 
 .stamp_list {
 	display: flex;
+	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: flex-start;
 	align-items: center;
@@ -9,6 +10,7 @@
 
 .stamping_list {
 	display: flex;
+	flex-direction: row;
 	flex-wrap: wrap;
 	justify-content: flex-start;
 	align-items: center;
@@ -18,6 +20,7 @@
 .stamping_bar {
 	width: 100%;
 	display: flex;
+	flex-direction: row;
 	justify-content: flex-start;
 	align-items: stretch;
 	box-shadow: 0px 2px 8px 4px rgba(0, 0, 0, 0.05);
@@ -64,6 +67,7 @@
 .stamp_info {
 	margin: 10px 10px;
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 }
 
@@ -75,6 +79,7 @@
 	color: var(--grey);
 	letter-spacing: 0.35em;
 	display: flex;
+	flex-direction: row;
 	align-items: center;
 }
 
@@ -137,6 +142,7 @@
 
 .bottom_subtag {
 	display: flex;
+	flex-direction: row;
 	align-items: center;
 	font-size: 10px;
 	font-family: "Roboto", sans-serif;
@@ -209,6 +215,7 @@
 .link {
 	color: var(--black);
 	display: flex;
+	flex-direction: row;
 	outline: none !important;
 	margin: 0 10px !important;
 }
@@ -383,6 +390,7 @@
 .btn{
 	cursor: pointer;
 	display: flex;
+	flex-direction: row;
 	width: 100%;
 	font-size: 12px;
 	font-weight: 500;
@@ -404,6 +412,7 @@
 .plugin_footer{
 	width: 100%;
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
 }
@@ -419,6 +428,7 @@
 
 .stamping_header{
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	align-items: center;
 	padding: 15px 15px 0px 15px;
@@ -436,6 +446,7 @@
 
 .stamping_footer{
 	display: flex;
+	flex-direction: row;
 	justify-content: space-between;
 	align-items: flex-end;
 	padding: 10px 15px;
@@ -444,6 +455,7 @@
 
 .icons_list{
 	display: flex;
+	flex-direction: row;
 	align-items: center;
 }
 

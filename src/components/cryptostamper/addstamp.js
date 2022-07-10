@@ -43,6 +43,7 @@ function AddStamp({
 	const [visibility, setVisibility] = useState("public");
 	const [stamping, setStamping] = useState(null);
 	const [stamp, setStamp] = useState(null);
+	const [stampset, setStampset] = useState(null);
 
 	const url = useSelector((state) => state.stamper.url);
 	const embedId = useSelector((state) => state.stamper.embedId);
@@ -102,10 +103,16 @@ function AddStamp({
 				contract.methods.getRarity(currentStamp.token_id).call()
 			);
 			*/
+			const MoralisStampset = Moralis.Object.extend("Stampset");
+			const query_stampset = new Moralis.Query(MoralisStampset);
+			promA.push(
+				query_stampset.matches("token_address", currentStamp.token_address, "i").find()
+			);
 			// console.log(currentStamp.objectId);
 			Promise.all(promA)
 				.then((responses) => {
 					const stamp_results = responses[0];
+					const stampset_result = responses[1];
 					// console.log(stamp_results);
 					if (stamp_results.length > 0) {
 						setStamp(stamp_results[0]);
@@ -116,6 +123,9 @@ function AddStamp({
 							alert("There is an error! please reload webpage.");
 							closeWindow();
 						}
+					}
+					if(stampset_result.length > 0) {
+						setStampset(stampset_result[0].toJSON());
 					}
 				})
 				.catch((error) => {
@@ -154,6 +164,12 @@ function AddStamp({
 						user_address: response.from,
 						token_name: currentStamp.name,
 						token_address: currentStamp.token_address,
+						token_meta: {
+							title: stampset?.title,
+							verified: stampset?.verified,
+							rarity: stampset?.max_rarity,
+							supply: stampset?.max_supply
+						},
 						token_id: currentStamp.token_id,
 						nft_id: `${currentStamp.token_address}-${currentStamp.token_id}`,
 						metadata: currentStamp.metadata,
@@ -165,6 +181,14 @@ function AddStamp({
 						title: title,
 						visibility: visibility,
 						comment: comment,
+						web_meta: {
+							logo: getHTMLMeta("favicon"),
+							description: getHTMLMeta("description") || getHTMLMeta("og:description"),
+							image: getHTMLMeta("og:image"),
+							url: getHTMLMeta("og:url"),
+							type: getHTMLMeta("og:type"),
+							domain: document.domain
+						},
 					})
 				);
 				promA.push(stamp.save());
@@ -218,6 +242,32 @@ function AddStamp({
 	const handleBack = () => {
 		setCurrentStamp(null);
 		setCurrentTab("explorer");
+	};
+
+	const getHTMLMeta = (_type) => {
+		var favicon = undefined;
+		if (_type === "favicon") {
+			var nodeList = document.getElementsByTagName("link");
+			for (var i = 0; i < nodeList.length; i++) {
+				if (
+					nodeList[i].getAttribute("rel") === "icon" ||
+					nodeList[i].getAttribute("rel") === "shortcut icon"
+				) {
+					favicon = nodeList[i].getAttribute("href");
+				}
+			}
+			return favicon.indexOf("http") === 0 ? favicon : "https://"+document.domain+favicon;
+		}
+		const metas = document.getElementsByTagName("meta");
+		for (let i = 0; i < metas.length; i++) {
+			if (metas[i].getAttribute("name") === _type) {
+				return metas[i].getAttribute("content");
+			}
+			if (metas[i].getAttribute("property") === _type) {
+				return metas[i].getAttribute("content");
+			}
+		}
+		return favicon;
 	};
 
 	const fadeBinding = useImageFade();

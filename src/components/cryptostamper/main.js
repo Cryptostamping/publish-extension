@@ -511,7 +511,7 @@ function CryptoStamper({ provider, settings, theme }) {
 	};
 
 	return (
-		<div className="csbs-w-100">
+		<div className="csbs-w-100 csbs-d-block">
 			{view === "banner" && (
 				<div
 					className={`csbs-d-flex csbs-flex-column csbs-align-items-center csbs-justify-content-center csbs-p-2`}

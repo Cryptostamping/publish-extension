@@ -3,6 +3,7 @@
 
 .banner_container{
 	display: flex;
+	flex-direction: row;
 	position: relative;
 	max-width: 864px;
 	width: 100%;
@@ -12,6 +13,7 @@
 
 .plugin_container{
 	display: flex;
+	flex-direction: row;
 	position: relative;
 	width: 100%;
 	align-items: stretch;
@@ -23,7 +25,7 @@
 	flex-direction: column;
 	justify-content: center;
 	align-items: flex-start;
-	width: 20%;
+	min-width: 20%;
 	margin-left: 30px;
 }
 
@@ -80,11 +82,12 @@
 
 .list_container{
 	display: block;
-	width: 100%;
+	flex-grow: 1;
 }
 
 .arrow_container{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	padding: 0 10px;
@@ -130,6 +133,7 @@
 
 .list_lay{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 }
 
@@ -165,6 +169,7 @@
 
 .stamp_frame_container{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 }
@@ -178,6 +183,7 @@
 .stamp_frame,
 .stamp_frame_mini{
 	display: flex;
+	flex-direction: row;
 	justify-content: center;
 	align-items: center;
 	max-width: 65px;
@@ -337,6 +343,7 @@
 	text-align: center;
 	margin-bottom: 0 !important;
 	display: flex;
+	flex-direction: row;
 	align-items: center;
 }
 

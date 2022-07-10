@@ -11,7 +11,7 @@ import { Provider } from "react-redux";
 import CryptoStamper from "~/src/components/cryptostamper/main";
 import { MOLARIS_APP_ID, MOLARIS_SERVER_URL } from "~/src/lib/data";
 
-import * as styles from "~/src/styles/pages/home.module.scss";
+import styles from "~/src/styles/pages/home.module.scss";
 
 import store from "~/src/lib/redux/store";
 

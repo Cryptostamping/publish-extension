@@ -223,13 +223,13 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 	const [listView, setListView] = useState("list");
 	const [sortParams, setSortParams] = useState({
 		name: "Latest",
-		params: { type: "updatedAt", order: true, id: "created-desc" },
+		params: { type: "createdAt", order: false, id: "created-desc" },
 	});
 
 	const sortTypes = [
 		{
 			name: "Latest",
-			params: { type: "updatedAt", order: true, id: "created-desc" },
+			params: { type: "createdAt", order: false, id: "created-desc" },
 		},
 		{
 			name: "Oldest",
@@ -374,7 +374,7 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 								<div
 									className={`${card.stamping_list} vert_scroll`}
 								>
-									<div className="csbs-d-flex csbs-w-100 csbs-justify-content-between csbs-align-items-center">
+									<div className="csbs-d-flex csbs-w-100 csbs-justify-content-between csbs-align-items-center csbs-mb-4">
 										<div className={styles.tab_icons}>
 											<div
 												onClick={() => {
@@ -403,7 +403,7 @@ function StampLister({ Web3Api, Moralis, ethereumProvider, chainId }) {
 												/>
 											</div>
 										</div>
-										<div className="csbs-d-flex csbs-flex-column csbs-w-100 csbs-align-items-center csbs-mb-4">
+										<div className="csbs-d-flex csbs-flex-column csbs-align-items-center">
 											<h1 className={styles.bold_title2}>
 												{stampingsCount}
 											</h1>
