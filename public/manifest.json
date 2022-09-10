@@ -8,7 +8,7 @@
     "48": "logos/logo48.png",
     "128": "logos/logo128.png"
   },
-  "version": "1.0.2",
+  "version": "1.0.3",
   "manifest_version": 2,
   "content_scripts": [
     {
@@ -26,12 +26,7 @@
     "scripts": ["chrome/background.js"],
     "persistent": true
   },
-  "permissions": [
-    "<all_urls>",
-    "activeTab",
-    "tabs",
-    "storage"
-  ],
+  "permissions": ["<all_urls>", "activeTab", "tabs", "storage"],
   "web_accessible_resources": [
     "/static/css/*",
     "/static/js/*",
